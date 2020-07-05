@@ -3,7 +3,17 @@
         <el-container>
             <el-header>
                 <h1>青空云音乐</h1>
-                <el-button type="success" plain>Login</el-button>
+                <el-button
+                    type="success"
+                    plain
+                    @click="() => (this.loginIsShow = true)"
+                    v-if="!userMessage.username"
+                    >Login</el-button
+                >
+                <div class="user-message">
+                    <img :src="userMessage.avatarUrl" alt="" class="avatar" />
+                    <p>{{ userMessage.username }}</p>
+                </div>
             </el-header>
             <el-container>
                 <el-aside width="250px">
@@ -23,10 +33,17 @@
                 <el-main>Main</el-main>
             </el-container>
         </el-container>
+
+        <login
+            :loginIsShow.sync="loginIsShow"
+            :username.sync="userMessage.username"
+            :avatarUrl.sync="userMessage.avatarUrl"
+        />
     </div>
 </template>
 
 <script>
+import login from "../components/login";
 export default {
     data() {
         return {
@@ -37,7 +54,15 @@ export default {
                 { cn: "朋友", en: "", icon: "el-icon-user" },
                 { cn: "音乐云盘", en: "", icon: "el-icon-cloudy" },
             ],
+            userMessage: {
+                username: "",
+                avatarUrl: "",
+            },
+            loginIsShow: false,
         };
+    },
+    components: {
+        login,
     },
     created() {
         // let newLink = document.createElement("link");
@@ -60,6 +85,17 @@ export default {
         align-items: center;
         justify-content: space-between;
         h1 {
+            color: var(--theme-text-color);
+        }
+        .user-message {
+            display: flex;
+            align-items: center;
+            .avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-right: 15px;
+            }
             color: var(--theme-text-color);
         }
     }
