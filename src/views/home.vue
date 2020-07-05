@@ -10,7 +10,7 @@
                     v-if="!userMessage.username"
                     >Login</el-button
                 >
-                <div class="user-message">
+                <div class="user-message" v-if="userMessage.username">
                     <img :src="userMessage.avatarUrl" alt="" class="avatar" />
                     <p>{{ userMessage.username }}</p>
                 </div>
@@ -30,7 +30,9 @@
                         </el-menu>
                     </el-col>
                 </el-aside>
-                <el-main>Main</el-main>
+                <el-main>
+                    <router-view></router-view>
+                </el-main>
             </el-container>
         </el-container>
 
@@ -48,7 +50,7 @@ export default {
     data() {
         return {
             listMenu: [
-                { cn: "发现音乐", en: "", icon: "el-icon-user" },
+                { cn: "发现音乐", en: "DiscovrMusic", icon: "el-icon-user" },
                 { cn: "私人FM", en: "", icon: "el-icon-place" },
                 { cn: "视频", en: "", icon: "el-icon-video-camera" },
                 { cn: "朋友", en: "", icon: "el-icon-user" },
