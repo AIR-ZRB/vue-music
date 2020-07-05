@@ -4,6 +4,7 @@ Vue.use(VueRouter);
 
 import home from "../views/home.vue";
 import DiscovrMusic from "../views/DiscovrMusic.vue";
+import privateFM from "../views/privateFM.vue"
 
 export default new VueRouter({
     mode: "hash",
@@ -11,7 +12,10 @@ export default new VueRouter({
         {
             path: "/",
             component: home,
-            children: [{ path: "/DiscovrMusic", component: DiscovrMusic }],
+            children: [
+                { path: "/DiscovrMusic", component: DiscovrMusic },
+                { path: "/privateFM", component: privateFM },
+            ],
         },
     ],
 });

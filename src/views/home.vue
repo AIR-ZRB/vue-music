@@ -24,8 +24,10 @@
                                 v-for="item in listMenu"
                                 :key="item.cn"
                             >
-                                <i :class="item.icon"></i>
-                                <span slot="title">{{ item.cn }}</span>
+                                <a :href="'#/' + item.en">
+                                    <i :class="item.icon"></i>
+                                    <span slot="title">{{ item.cn }}</span>
+                                </a>
                             </el-menu-item>
                         </el-menu>
                     </el-col>
@@ -51,7 +53,7 @@ export default {
         return {
             listMenu: [
                 { cn: "发现音乐", en: "DiscovrMusic", icon: "el-icon-user" },
-                { cn: "私人FM", en: "", icon: "el-icon-place" },
+                { cn: "私人FM", en: "privateFM", icon: "el-icon-place" },
                 { cn: "视频", en: "", icon: "el-icon-video-camera" },
                 { cn: "朋友", en: "", icon: "el-icon-user" },
                 { cn: "音乐云盘", en: "", icon: "el-icon-cloudy" },
@@ -107,9 +109,18 @@ export default {
             border: none;
         }
 
+        a {
+            text-decoration: none;
+            color: #000;
+        }
         .el-menu-item.is-active {
-            color: var(--theme-color-light);
             // color: var(--theme-color);
+            a {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                color: var(--theme-color-light);
+            }
             transition: all 0.3s;
             &:hover {
                 // transform: translate(10px)
