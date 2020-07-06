@@ -7,6 +7,7 @@ import DiscovrMusic from "../views/DiscovrMusic.vue";
 import privateFM from "../views/privateFM.vue";
 import video from "../views/video.vue";
 import friends from "../views/friends.vue";
+import cloud from "../views/cloud.vue";
 
 export default new VueRouter({
     mode: "hash",
@@ -19,6 +20,7 @@ export default new VueRouter({
                 { path: "/privateFM", component: privateFM },
                 { path: "/video", component: video },
                 { path: "/friends", component: friends },
+                { path: "/cloud", component: cloud },
             ],
         },
     ],

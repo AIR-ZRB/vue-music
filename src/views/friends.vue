@@ -25,7 +25,7 @@ export default {
             // console.log(resData);
 
             this.getDynamic = resData.data.body.event;
-            console.log(this.getDynamic)
+            // console.log(this.getDynamic)
         },
     },
     created() {

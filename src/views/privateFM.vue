@@ -34,7 +34,7 @@ export default {
             });
 
             this.fm = getFM.data.body.data;
-            console.log(this.fm);
+            // console.log(this.fm);
 
             // this.fn[0].name
             // this.fm[0].album.picUrl

@@ -55,7 +55,8 @@ export default {
                 { cn: "私人FM", en: "privateFM", icon: "el-icon-place" },
                 { cn: "视频", en: "video", icon: "el-icon-video-camera" },
                 { cn: "朋友", en: "friends", icon: "el-icon-user" },
-                { cn: "音乐云盘", en: "", icon: "el-icon-cloudy" },
+                { cn: "音乐云盘", en: "cloud", icon: "el-icon-cloudy" },
+                { cn: "我喜欢的音乐", en: "likeMusic", icon: "el-icon-cloudy" },
             ],
             userMessage: {
                 username: "",
@@ -67,7 +68,7 @@ export default {
     },
     methods: {
         defalutRoute() {
-            console.log(this.listMenu);
+            // console.log(this.listMenu);
             const current = this.$route.fullPath.substring(1);
             this.listMenu.forEach((item) => {
                 if (current === item.en) {
