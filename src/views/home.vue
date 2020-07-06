@@ -4,7 +4,6 @@
             <el-header>
                 <h1>青空云音乐</h1>
                 <el-button
-                    type="success"
                     plain
                     @click="() => (this.loginIsShow = true)"
                     v-if="!userMessage.username"
@@ -18,7 +17,7 @@
             <el-container>
                 <el-aside width="250px">
                     <el-col>
-                        <el-menu default-active="发现音乐">
+                        <el-menu :default-active="defalutRouter">
                             <el-menu-item
                                 :index="item.cn"
                                 v-for="item in listMenu"
@@ -54,8 +53,8 @@ export default {
             listMenu: [
                 { cn: "发现音乐", en: "DiscovrMusic", icon: "el-icon-user" },
                 { cn: "私人FM", en: "privateFM", icon: "el-icon-place" },
-                { cn: "视频", en: "", icon: "el-icon-video-camera" },
-                { cn: "朋友", en: "", icon: "el-icon-user" },
+                { cn: "视频", en: "video", icon: "el-icon-video-camera" },
+                { cn: "朋友", en: "friends", icon: "el-icon-user" },
                 { cn: "音乐云盘", en: "", icon: "el-icon-cloudy" },
             ],
             userMessage: {
@@ -63,20 +62,28 @@ export default {
                 avatarUrl: "",
             },
             loginIsShow: false,
+            defalutRouter: "",
         };
+    },
+    methods: {
+        defalutRoute() {
+            console.log(this.listMenu);
+            const current = this.$route.fullPath.substring(1);
+            this.listMenu.forEach((item) => {
+                if (current === item.en) {
+                    this.defalutRouter = item.cn;
+                }
+            });
+        },
     },
     components: {
         login,
     },
     created() {
-        // let newLink = document.createElement("link");
-        // newLink.setAttribute("href","/assets/css/theme-green.css");
-        // newLink.setAttribute("type","text/css");
-        // newLink.setAttribute("rel","stylesheet");
-        // document.head.appendChild(newLink)
-
+        this.defalutRoute();
         const LinkCss = document.getElementById("theme");
         LinkCss.href = require("../assets/css/theme-green.css");
+        this.$router.push(this.$route.fullPath);
     },
 };
 </script>
