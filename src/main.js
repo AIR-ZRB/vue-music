@@ -25,12 +25,12 @@ new Vue({
     data: {
         music: {
             MusicId: "",
-            MusicName: "",
-            MusicPicture: "",
+            MusicName: "空",
+            MusicPicture: "http://p2.music.126.net/fxI_iAsaRU9M5ZGE-Pu7iw==/109951164479032071.jpg",
             MusicTime: "",
             MusicUrl: "",
             MusicAvatarPicture: "",
-            MusicAvatar: "",
+            MusicAvatar: "空",
             MusicVolume: 0.5,
             MusicLoading: false,
         },

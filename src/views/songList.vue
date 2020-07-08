@@ -77,9 +77,7 @@ export default {
             // 必须需要使用字符串形式，不然报错
             let musicMessage = "";
             if (musicId !== "") {
-                musicMessage = await this.axios.post(
-                    `/song/detail?ids=${musicId}`
-                );
+                musicMessage = await this.axios.post(`/song/detail?ids=${musicId}`);
                 const temporary = [];
 
                 musicMessage.data.body.songs.forEach((item) => {

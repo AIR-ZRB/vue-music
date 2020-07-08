@@ -38,13 +38,39 @@
                 </el-main>
             </el-container>
         </el-container>
-        <audio :src="this.$root.music.MusicUrl" autoplay></audio>
+        <audio
+            :src="this.$root.music.MusicUrl"
+            autoplay
+            ref="audio"
+            @canplay="playing"
+        ></audio>
         <login
             :loginIsShow.sync="loginIsShow"
             :username.sync="userMessage.username"
             :avatarUrl.sync="userMessage.avatarUrl"
         />
-       
+        <!-- 底部音乐控件    -->
+        <div class="play-component">
+            <div class="btn-ctrl">
+                <i class="el-icon-caret-left"></i>
+                <i class="el-icon-video-pause"></i>
+                <i class="el-icon-caret-right"></i>
+            </div>
+            <div class="progress">
+                <img :src="$root.music.MusicPicture" alt="" />
+                <div class="music-message">
+                    <p>{{ $root.music.MusicName }}</p>
+                    <p>{{ $root.music.MusicAvatar }}</p>
+                </div>
+                <el-progress
+                    :percentage="playMusicMessage.progress"
+                ></el-progress>
+            </div>
+            <div class="voice-ctrl">
+                <i class="el-icon-microphone"></i>
+                <el-progress :show-text="false" :percentage="100"></el-progress>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -68,6 +94,14 @@ export default {
             },
             loginIsShow: false, // 登录框是否显示
             defalutRouter: "", // 默认路由
+            playMusicMessage: {
+                progress: 0,
+                volume: this.$root.music.MusicVolume,
+            },
+            timer: null,
+            timerFlag: false,
+            currentMusic: "",
+            currentProgress: 0,
         };
     },
     methods: {
@@ -103,9 +137,53 @@ export default {
                 this.defalutRoute();
             });
         },
+        playing() {
+            if (!this.$refs.audio.duration) return;
+
+            if (this.$root.music.MusicUrl != this.currentMusic) {
+                // this.clearTimerArg();
+                // this.playing();
+                clearInterval(this.timer);
+                this.timer = setInterval(this.timerFunction, 1000);
+                this.currentMusic = this.$root.music.MusicUrl;
+                this.currentProgress = 0;
+                this.timerFlag = false;
+                console.log("切歌");
+            }
+        },
+        ClosurePlaying() {
+            if (this.timer) return;
+            if (this.timerFlag) return;
+            // this.timer = setInterval(this.timerFunction, 1000);
+        },
+        timerFunction() {
+            const duration = this.$refs.audio.duration;
+            console.log(duration);
+            this.currentProgress++;
+            const proportion = parseInt(
+                (this.currentProgress / duration) * 100
+            );
+            this.playMusicMessage.progress =
+                proportion > 100 ? 100 : proportion;
+
+            // 当比例到达100时，停止定时器，且清空
+            if (proportion >= 100) {
+                clearInterval(this.timer);
+                this.timer = null;
+                this.timerFlag = true;
+ 
+            }
+        },
+    },
+    updated() {
+        // 点击新歌曲，currentMusic的url更改，触发
+        this.playing();
+
+        // console.log("切歌");
     },
     components: {
-        login,loading
+        login,
+        loading,
     },
     created() {
         this.getUserMusicList();
@@ -167,5 +245,73 @@ export default {
     .el-main {
         position: relative;
     }
+
+    .play-component {
+        width: 100%;
+        height: 50px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background: #fff;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #000;
+        .btn-ctrl {
+            i {
+                font-size: 40px;
+                color: var(--theme-color);
+                cursor: pointer;
+                margin: 0 5px;
+            }
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            img {
+                width: 40px;
+                height: 40px;
+            }
+            .el-progress {
+                width: 500px;
+            }
+            .music-message {
+                margin: 0 20px;
+                p {
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .el-progress-bar__inner {
+            background: var(--theme-color);
+        }
+
+        .voice-ctrl {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            i {
+                font-size: 16px;
+            }
+            .el-progress {
+                width: 100px;
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+    background: var(--theme-color);
+}
+*::-webkit-scrollbar-track {
+    background-color: transparent;
 }
 </style>

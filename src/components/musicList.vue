@@ -23,11 +23,14 @@ export default {
         async getMusicUrl(musicMessage) {
             this.$root.music.MusicLoading = true;
             let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
+            console.log(musicMessage)
             this.$root.music.MusicId = musicMessage.id;
             this.$root.music.MusicName = musicMessage.name;
+            this.$root.music.MusicAvatar = musicMessage.author;
             this.$root.music.MusicPicture = musicMessage.musicPicture;
             this.$root.music.MusicName = musicMessage.name;
             this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
+            
 
             this.$nextTick(() => {
                 // 获取歌曲的URL
@@ -37,8 +40,7 @@ export default {
             });
 
         },
-    },
-    created() {},
+    }
 };
 </script>
 
