@@ -8,6 +8,8 @@ import privateFM from "../views/privateFM.vue";
 import video from "../views/video.vue";
 import friends from "../views/friends.vue";
 import cloud from "../views/cloud.vue";
+import likeMusic from "../views/likeMusic.vue";
+import songList from "../views/songList.vue";
 
 export default new VueRouter({
     mode: "hash",
@@ -21,6 +23,8 @@ export default new VueRouter({
                 { path: "/video", component: video },
                 { path: "/friends", component: friends },
                 { path: "/cloud", component: cloud },
+                { path: "/likeMusic", component: likeMusic },
+                { path: "/songList/*", component: songList },
             ],
         },
     ],

@@ -9,13 +9,7 @@
 export default {
   data(){
     return {
-      music: {
-        MusicId: "",
-        MusicName: "",
-        MusicTime: "",
-        MusicVolume: 0.5,
-        
-      }
+     
     }
   }
 }
