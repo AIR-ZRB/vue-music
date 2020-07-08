@@ -151,11 +151,6 @@ export default {
                 console.log("切歌");
             }
         },
-        ClosurePlaying() {
-            if (this.timer) return;
-            if (this.timerFlag) return;
-            // this.timer = setInterval(this.timerFunction, 1000);
-        },
         timerFunction() {
             const duration = this.$refs.audio.duration;
             console.log(duration);
@@ -178,8 +173,6 @@ export default {
     updated() {
         // 点击新歌曲，currentMusic的url更改，触发
         this.playing();
-
-        // console.log("切歌");
     },
     components: {
         login,

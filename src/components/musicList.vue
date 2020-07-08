@@ -20,6 +20,7 @@
 export default {
     props: ["musicMessage", "showItems"],
     methods: {
+        // 双击播放音乐
         async getMusicUrl(musicMessage) {
             this.$root.music.MusicLoading = true;
             let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
@@ -31,7 +32,6 @@ export default {
             this.$root.music.MusicName = musicMessage.name;
             this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
             
-
             this.$nextTick(() => {
                 // 获取歌曲的URL
                 console.log(this.$root.music.MusicUrl);
