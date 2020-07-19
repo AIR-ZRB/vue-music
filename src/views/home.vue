@@ -38,22 +38,27 @@
                 </el-main>
             </el-container>
         </el-container>
+
+        <!-- 音乐播放媒体组件 -->
         <audio
             :src="this.$root.music.MusicUrl"
             autoplay
             ref="audio"
             @canplay="playing"
         ></audio>
+
+        <!-- 登录框 -->
         <login
             :loginIsShow.sync="loginIsShow"
             :username.sync="userMessage.username"
             :avatarUrl.sync="userMessage.avatarUrl"
         />
-        <!-- 底部音乐控件    -->
+
+        <!-- 底部音乐控件 -->
         <div class="play-component">
             <div class="btn-ctrl">
                 <i class="el-icon-caret-left"></i>
-                <i class="el-icon-video-pause"></i>
+                <i class="el-icon-video-pause" @click="musicPlaying"></i>
                 <i class="el-icon-caret-right"></i>
             </div>
             <div class="progress">
@@ -80,6 +85,7 @@ import loading from "../components/loading";
 export default {
     data() {
         return {
+            // 初始列表
             listMenu: [
                 { cn: "发现音乐", en: "DiscovrMusic", icon: "el-icon-user" },
                 { cn: "私人FM", en: "privateFM", icon: "el-icon-place" },
@@ -91,6 +97,7 @@ export default {
             userMessage: {
                 username: "",
                 avatarUrl: "",
+                isLogin: false
             },
             loginIsShow: false, // 登录框是否显示
             defalutRouter: "", // 默认路由
@@ -141,8 +148,6 @@ export default {
             if (!this.$refs.audio.duration) return;
 
             if (this.$root.music.MusicUrl != this.currentMusic) {
-                // this.clearTimerArg();
-                // this.playing();
                 clearInterval(this.timer);
                 this.timer = setInterval(this.timerFunction, 1000);
                 this.currentMusic = this.$root.music.MusicUrl;
@@ -155,9 +160,7 @@ export default {
             const duration = this.$refs.audio.duration;
             console.log(duration);
             this.currentProgress++;
-            const proportion = parseInt(
-                (this.currentProgress / duration) * 100
-            );
+            let proportion = parseInt((this.currentProgress / duration) * 100);
             this.playMusicMessage.progress =
                 proportion > 100 ? 100 : proportion;
 
@@ -166,23 +169,41 @@ export default {
                 clearInterval(this.timer);
                 this.timer = null;
                 this.timerFlag = true;
- 
             }
         },
+        // 封装promise
+        isLogin() {
+            const getCookie = window.sessionStorage.getItem("cookie");
+            // getCookie ? this.getUserMusicList()  : this.loginIsShow = true;
+             if (getCookie && this.userMessage.isLogin === false) {
+                this.getUserMusicList();
+                this.userMessage.isLogin = true;
+            } 
+        },
+        musicPlaying(){
+
+        }
     },
     updated() {
         // 点击新歌曲，currentMusic的url更改，触发
         this.playing();
+
+
+        // 当登录时触发
+        console.log("????");
+        this.isLogin();
     },
     components: {
         login,
         loading,
     },
     created() {
-        this.getUserMusicList();
-
+        this.isLogin();
         const LinkCss = document.getElementById("theme");
         LinkCss.href = require("../assets/css/theme-green.css");
+        // this.axios.get("/login/status").then((data)=>{
+        //     console.log(data);
+        // })
     },
 };
 </script>

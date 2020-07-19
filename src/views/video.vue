@@ -3,7 +3,7 @@
         <!-- 标签区域, -->
         <div class="tag-group">
             <el-button @click="drawer = true">
-               {{currentSelectText}}
+                {{ currentSelectText }}
             </el-button>
 
             <!-- 下拉菜单 -->
@@ -47,7 +47,7 @@ export default {
             videoList: [],
             currentSelect: [],
             drawer: false, // 控制抽屉是否打开
-            currentSelectText: "选择标签"
+            currentSelectText: "选择标签",
         };
     },
     methods: {
@@ -72,15 +72,17 @@ export default {
             this.videoList = videoList.data.body.datas;
         },
         getCurrentSelectTags(event, data) {
-           this.currentSelectText = data.name;
-        //    点击完之后不会自动关闭抽屉
-        //    this.handleClose();
+            this.currentSelectText = data.name;
+            //    点击完之后不会自动关闭抽屉
+            //    this.handleClose();
         },
-        handleClose(done) {done();},
+        handleClose(done) {
+            done();
+        },
     },
     created() {
         console.log("video");
-        this.getVideoList();    
+        this.getVideoList();
         this.getTags();
     },
 };
@@ -127,6 +129,11 @@ export default {
     .el-row {
         width: 25%;
         margin: 20px 0;
+
+        .el-card {
+            border: none;
+            box-shadow: none;
+        }
 
         img {
             width: 275px;

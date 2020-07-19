@@ -118,12 +118,17 @@ export default {
                 width: 25%;
                 margin-bottom: 20px;
 
+                .el-card {
+                    border: none;
+                    box-shadow: none;
+                }
+
                 img {
                     width: 200px;
                     height: 200px;
                 }
                 span {
-                    display: inline-block;
+                    display: block;
                     height: 50px;
                     width: 200px;
                     margin: 10px 0;

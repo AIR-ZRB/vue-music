@@ -23,24 +23,26 @@ export default {
         // 双击播放音乐
         async getMusicUrl(musicMessage) {
             this.$root.music.MusicLoading = true;
-            let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
-            console.log(musicMessage)
-            this.$root.music.MusicId = musicMessage.id;
-            this.$root.music.MusicName = musicMessage.name;
-            this.$root.music.MusicAvatar = musicMessage.author;
-            this.$root.music.MusicPicture = musicMessage.musicPicture;
-            this.$root.music.MusicName = musicMessage.name;
-            this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
-            
+            let musicUrl = await this.axios.post(
+                `/song/url?id=${musicMessage.id}`
+            );
+            console.log(musicMessage);
+            if (musicUrl.data.body.data[0].url) {
+                this.$root.music.MusicId = musicMessage.id;
+                this.$root.music.MusicName = musicMessage.name;
+                this.$root.music.MusicAvatar = musicMessage.author;
+                this.$root.music.MusicPicture = musicMessage.musicPicture;
+                this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
+            }
             this.$nextTick(() => {
                 // 获取歌曲的URL
                 console.log(this.$root.music.MusicUrl);
-                this.$root.music.MusicUrl == null && this.$message.error('没有版权或者VIP音乐');
+                this.$root.music.MusicUrl == null &&
+                    this.$message.error("没有版权或者VIP音乐");
                 this.$root.music.MusicLoading = false;
             });
-
         },
-    }
+    },
 };
 </script>
 

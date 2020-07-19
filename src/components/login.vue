@@ -2,13 +2,12 @@
     <div class="login" @click="loginClick" v-if="_props.loginIsShow">
         <div class="login-box">
             <h2>手机登录</h2>
-            <el-input placeholder="请输入内容" v-model.trim="username">
-                <template slot="prepend">账号</template>
-            </el-input>
+          
 
-            <el-input type="password" v-model.trim="password">
-                <template slot="prepend">密码</template>
-            </el-input>
+            <el-input v-model.trim="username" placeholder="请输入账号"></el-input>
+            <el-input v-model.trim="password" placeholder="请输入密码" type="password"></el-input>
+
+          
             <el-button type="success" class="login-submit">Login</el-button>
         </div>
     </div>
@@ -28,7 +27,6 @@ export default {
             // console.log(event)
             const targetClass = event.target.className;
             targetClass === "login" && this.$emit("update:loginIsShow", false);
-           
 
             if (targetClass.search("login-submit") > 0) {
                 const loginRes = await this.axios.post(`/login/cellphone`, {
@@ -74,6 +72,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 999;
     .login-box {
         width: 350px;
         height: 300px;
@@ -84,9 +83,9 @@ export default {
         justify-content: center;
         flex-wrap: wrap;
 
-        .el-input {
-            margin-bottom: 30px;
-        }
+        // .el-input {
+        //     margin-bottom: 30px;
+        // }
     }
 }
 </style>
