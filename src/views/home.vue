@@ -97,10 +97,10 @@ export default {
             userMessage: {
                 username: "",
                 avatarUrl: "",
-                isLogin: false
+                isLogin: false,
             },
             loginIsShow: true, // 登录框是否显示
-            defalutRouter: "", // 默认路由
+            defalutRouter: "发现音乐", // 默认路由
             playMusicMessage: {
                 progress: 0,
                 volume: this.$root.music.MusicVolume,
@@ -112,16 +112,6 @@ export default {
         };
     },
     methods: {
-        // 默认跳转路由
-        defalutRoute() {
-            this.$router.push(this.$route.fullPath);
-            const current = this.$route.fullPath.substring(1);
-            this.listMenu.forEach((item) => {
-                if (current === item.en) {
-                    this.defalutRouter = item.cn;
-                }
-            });
-        },
         // 获取用户歌单
         async getUserMusicList() {
             const userMusicList = await this.axios.post("/user/playlist", {
@@ -139,10 +129,7 @@ export default {
             });
             this.listMenu = this.listMenu.concat(pushSongList);
 
-            // 获取到所有歌单，再跳转路由
-            this.$nextTick(() => {
-                this.defalutRoute();
-            });
+    
         },
         playing() {
             if (!this.$refs.audio.duration) return;
@@ -174,14 +161,12 @@ export default {
         // 封装promise
         isLogin() {
             const getCookie = window.sessionStorage.getItem("cookie");
-             if (getCookie && this.userMessage.isLogin === false) {
+            if (getCookie && this.userMessage.isLogin === false) {
                 this.getUserMusicList();
                 this.userMessage.isLogin = true;
-            } 
+            }
         },
-        musicPlaying(){
-
-        }
+        musicPlaying() {},
     },
     updated() {
         // 点击新歌曲，currentMusic的url更改，触发
@@ -195,8 +180,13 @@ export default {
         loading,
     },
     created() {
+        // 清除之前的缓存Cookie和UserId，不能从Cookie登录，每次进来都需要重新登录
         window.sessionStorage.removeItem("cookie");
         window.sessionStorage.removeItem("userId");
+
+        this.$router.push("/DiscovrMusic");
+
+        // 主题色
         const LinkCss = document.getElementById("theme");
         LinkCss.href = require("../assets/css/theme-green.css");
     },

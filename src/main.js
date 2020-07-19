@@ -23,6 +23,7 @@ import "./assets/css/global.css";
 
 new Vue({
     data: {
+        login: false,
         music: {
             MusicId: "",
             MusicName: "空",

@@ -1,5 +1,6 @@
 <template>
     <div class="private-fm">
+        <h2>私人FM</h2>
         <div class="music-picture">
             <img
                 v-for="item in fm"

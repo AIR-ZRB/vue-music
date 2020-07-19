@@ -19,4 +19,7 @@ export default {
 #app {
   
 }
+h2 {
+  margin-bottom: 20px;
+}
 </style>

@@ -103,7 +103,7 @@ export default {
                     });
                 });
                 this.musicMessage = temporary;
-                console.log(this.musicMessage);
+                // console.log(this.musicMessage);
             }
             
             // 加载动画停止

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>音乐云盘</h2>
         <el-table :data="cloudMusic" @row-dblclick="getMusicUrl">
             <el-table-column
                 v-for="item in showList"
@@ -35,13 +36,13 @@ export default {
             });
 
             this.cloudMusic = cloudMusic.data.body.data;
-            console.log(this.cloudMusic);
+            // console.log(this.cloudMusic);
         },
         async getMusicUrl(musicMessage) {
             let musicUrl = await this.axios.post(
                 `/song/url?id=${musicMessage.songId}`
             );
-            console.log(musicUrl);
+            // console.log(musicUrl);
             if (musicUrl.data.body.data[0].url) {
                 this.$root.music.MusicId = musicMessage.songId;
                 this.$root.music.MusicName = musicMessage.songName;
@@ -52,7 +53,7 @@ export default {
 
             this.$nextTick(() => {
                 // 获取歌曲的URL
-                console.log(this.$root.music.MusicUrl);
+                // console.log(this.$root.music.MusicUrl);
                 this.$root.music.MusicUrl == null &&
                     this.$message.error("没有版权或者VIP音乐");
                 this.$root.music.MusicLoading = false;

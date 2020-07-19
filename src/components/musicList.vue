@@ -26,7 +26,7 @@ export default {
             let musicUrl = await this.axios.post(
                 `/song/url?id=${musicMessage.id}`
             );
-            console.log(musicMessage);
+            // console.log(musicMessage);
             if (musicUrl.data.body.data[0].url) {
                 this.$root.music.MusicId = musicMessage.id;
                 this.$root.music.MusicName = musicMessage.name;
@@ -36,7 +36,7 @@ export default {
             }
             this.$nextTick(() => {
                 // 获取歌曲的URL
-                console.log(this.$root.music.MusicUrl);
+                // console.log(this.$root.music.MusicUrl);
                 this.$root.music.MusicUrl == null &&
                     this.$message.error("没有版权或者VIP音乐");
                 this.$root.music.MusicLoading = false;

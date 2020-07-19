@@ -18,8 +18,7 @@ export default {
     props: ["loginIsShow"],
     data() {
         return {
-            username: "",
-            password: "",
+           
         };
     },
     methods: {
@@ -45,7 +44,7 @@ export default {
                 //  用户Id用来请求喜欢音乐的歌单使用
                 window.sessionStorage.setItem("cookie", cookie);
                 window.sessionStorage.setItem("userId", userId);
-
+                this.$root.login = true;
                 this.$emit(
                     "update:username",
                     loginRes.data.body.profile.nickname

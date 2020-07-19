@@ -1,5 +1,6 @@
 <template>
     <div class="video">
+        <h2>视频</h2>
         <!-- 标签区域, -->
         <div class="tag-group">
             <el-button @click="drawer = true">
@@ -81,7 +82,7 @@ export default {
         },
     },
     created() {
-        console.log("video");
+        // console.log("video");
         this.getVideoList();
         this.getTags();
     },

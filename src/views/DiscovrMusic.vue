@@ -25,15 +25,11 @@
                 你还未登录，此功能无法使用
             </div>
 
-            <div
-                class="recommend-playlist-box"
-                v-if="recommendPlaylist.length === 0 ? false : true"
-            >
+            <div class="recommend-playlist-box"  v-if="recommendPlaylist.length === 0 ? false : true">
                 <el-row v-for="item in recommendPlaylist" :key="item.name">
                     <el-col>
                         <el-card :body-style="{ padding: '0px' }">
                             <img :src="item.picUrl" class="image" />
-
                             <span>{{ item.name }}</span>
                         </el-card>
                     </el-col>
@@ -47,7 +43,7 @@
 export default {
     data() {
         return {
-            isLogin: false,
+            isLogin: this.$root.login,
             banner: [],
             titleMenu: [
                 { title: "个性推荐", active: true },
@@ -64,9 +60,13 @@ export default {
         async getBanner() {
             let banner = await this.axios.get("/banner?type=0");
             this.banner = banner.data.body.banners;
+
         },
         async getRecommendPlaylist() {
-            if (!this.isLogin) {
+            let getCookie = window.sessionStorage.getItem("cookie");
+            console.log(getCookie);
+            if (this.$root.login && getCookie ) {
+                console.log("??????????????????");
                 let playList = await this.axios.post("/recommend/resource", {
                     withCredentials: true,
                     date: +new Date(),
@@ -77,16 +77,16 @@ export default {
             }
         },
     },
-
     created() {
         this.getBanner();
-        // 如果登录完要如何自动调用
-        // this.getRecommendPlaylist();
+        this.isLogin = true;
     },
-    updated() {
-        this.getRecommendPlaylist();
-        console.log(this.recommendPlaylist);
-    },
+    watch:{
+        isLogin(){
+            console.log("isLogin")
+        }
+    }
+
 };
 </script>
 
