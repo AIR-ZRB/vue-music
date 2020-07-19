@@ -99,7 +99,7 @@ export default {
                 avatarUrl: "",
                 isLogin: false
             },
-            loginIsShow: false, // 登录框是否显示
+            loginIsShow: true, // 登录框是否显示
             defalutRouter: "", // 默认路由
             playMusicMessage: {
                 progress: 0,
@@ -174,7 +174,6 @@ export default {
         // 封装promise
         isLogin() {
             const getCookie = window.sessionStorage.getItem("cookie");
-            // getCookie ? this.getUserMusicList()  : this.loginIsShow = true;
              if (getCookie && this.userMessage.isLogin === false) {
                 this.getUserMusicList();
                 this.userMessage.isLogin = true;
@@ -188,9 +187,7 @@ export default {
         // 点击新歌曲，currentMusic的url更改，触发
         this.playing();
 
-
         // 当登录时触发
-        console.log("????");
         this.isLogin();
     },
     components: {
@@ -198,18 +195,17 @@ export default {
         loading,
     },
     created() {
-        this.isLogin();
+        window.sessionStorage.removeItem("cookie");
+        window.sessionStorage.removeItem("userId");
         const LinkCss = document.getElementById("theme");
         LinkCss.href = require("../assets/css/theme-green.css");
-        // this.axios.get("/login/status").then((data)=>{
-        //     console.log(data);
-        // })
     },
 };
 </script>
 
 <style lang="scss">
 .home {
+    min-width: 1400px;
     .el-header {
         background: var(--theme-color);
         display: flex;

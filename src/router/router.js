@@ -16,6 +16,7 @@ export default new VueRouter({
         {
             path: "/",
             component: home,
+            redirect: "/DiscovrMusic",
             children: [
                 { path: "/DiscovrMusic", component: DiscovrMusic },
                 { path: "/privateFM", component: privateFM },

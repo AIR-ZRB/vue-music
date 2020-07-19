@@ -34,7 +34,7 @@ export default {
                 // { cn: "操作", en: "?" },
                 // { cn: "音乐下载地址", en: "url" },
             ],
-            detailsSongList: [], // 歌单纤细信息
+            detailsSongList: [], // 歌单详细信息
             songListImage: "", // 歌单的图片
             songListName: "", // 歌单的名字
             musicMessage: [], // 歌曲的详细信息
@@ -47,11 +47,15 @@ export default {
     methods: {
         // 用于获取歌单的信息
         async getUserSongList() {
+            
+            this.detailsSongList = [];
+
+            // 加载动画
             this.$root.music.MusicLoading = true;
+
             // 获取本歌单ID
             let getSongListId = this.$route.fullPath.split("/");
             getSongListId = getSongListId[getSongListId.length - 1];
-            console.log(getSongListId);
 
             // 获取歌单里的所有歌曲
             const detailsSongList = await this.axios.post(
@@ -71,13 +75,19 @@ export default {
                 // console.log(ids.substr(0,ids.length-1))
                 this.getMusicMessage(ids.substr(0, ids.length - 1));
             });
+
         },
         // 用于获取音乐的详情信息
         async getMusicMessage(musicId) {
+            // 进来前线清楚之前的音乐，避免出BUG
+            this.musicMessage = [];
+
             // 必须需要使用字符串形式，不然报错
             let musicMessage = "";
             if (musicId !== "") {
-                musicMessage = await this.axios.post(`/song/detail?ids=${musicId}`);
+                musicMessage = await this.axios.post(
+                    `/song/detail?ids=${musicId}`
+                );
                 const temporary = [];
 
                 musicMessage.data.body.songs.forEach((item) => {
@@ -93,8 +103,10 @@ export default {
                     });
                 });
                 this.musicMessage = temporary;
+                console.log(this.musicMessage);
             }
-
+            
+            // 加载动画停止
             this.$root.music.MusicLoading = false;
         },
     },

@@ -8,7 +8,7 @@
             <el-input v-model.trim="password" placeholder="请输入密码" type="password"></el-input>
 
           
-            <el-button type="success" class="login-submit">Login</el-button>
+            <el-button type="success" class="login-submit" >Login</el-button>
         </div>
     </div>
 </template>
@@ -50,10 +50,7 @@ export default {
                     "update:username",
                     loginRes.data.body.profile.nickname
                 );
-                this.$emit(
-                    "update:avatarUrl",
-                    loginRes.data.body.profile.avatarUrl
-                );
+                this.$emit("update:avatarUrl",loginRes.data.body.profile.avatarUrl);
                 this.$emit("update:loginIsShow", false);
             }
         },
@@ -78,14 +75,19 @@ export default {
         height: 300px;
         border-radius: 20px;
         background: #fff;
-        padding: 20px;
+        padding: 20px 20px 0 20px;
         display: flex;
-        justify-content: center;
+        justify-content: left;
         flex-wrap: wrap;
 
         // .el-input {
         //     margin-bottom: 30px;
         // }
+        button {
+            // padding: 0;
+            height: 40px;
+
+        }
     }
 }
 </style>

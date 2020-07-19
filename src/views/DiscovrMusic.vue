@@ -24,6 +24,7 @@
             <div v-if="recommendPlaylist.length === 0 ? true : false">
                 你还未登录，此功能无法使用
             </div>
+
             <div
                 class="recommend-playlist-box"
                 v-if="recommendPlaylist.length === 0 ? false : true"
@@ -46,6 +47,7 @@
 export default {
     data() {
         return {
+            isLogin: false,
             banner: [],
             titleMenu: [
                 { title: "个性推荐", active: true },
@@ -64,24 +66,26 @@ export default {
             this.banner = banner.data.body.banners;
         },
         async getRecommendPlaylist() {
-            let playList = await this.axios.post("/recommend/resource", {
-                withCredentials: true,
-                date: +new Date(),
-                cookie: window.sessionStorage.getItem("cookie"),
-            });
-            this.recommendPlaylist = playList.data.body.recommend;
-            console.log(playList.data.body.recommend);
+            if (!this.isLogin) {
+                let playList = await this.axios.post("/recommend/resource", {
+                    withCredentials: true,
+                    date: +new Date(),
+                    cookie: window.sessionStorage.getItem("cookie"),
+                });
+                this.recommendPlaylist = playList.data.body.recommend;
+                this.isLogin = true;
+            }
         },
     },
 
     created() {
         this.getBanner();
         // 如果登录完要如何自动调用
-        this.getRecommendPlaylist();
+        // this.getRecommendPlaylist();
     },
     updated() {
-        // this.getRecommendPlaylist();
-        console.log("????   ");
+        this.getRecommendPlaylist();
+        console.log(this.recommendPlaylist);
     },
 };
 </script>
