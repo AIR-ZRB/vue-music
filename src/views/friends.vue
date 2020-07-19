@@ -7,6 +7,7 @@
 
 <script>
 import dynamic from "../components/dynamic.vue";
+import request from "../request";
 export default {
     data() {
         return {
@@ -16,19 +17,8 @@ export default {
     components: {
         dynamic,
     },
-    methods: {
-        async getFriends() {
-            const resData = await this.axios.post("/event", {
-                pagesize: 8,
-                withCredentials: true,
-                cookie: window.sessionStorage.getItem("cookie"),
-            });
-            // console.log(resData);
-            this.getDynamic = resData.data.body.event;
-        },
-    },
     created() {
-        this.getFriends();
+        request.getFriends.call(this);
     },
 };
 </script>

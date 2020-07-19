@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import request from "../request";
 export default {
     data() {
         return {
@@ -57,36 +58,12 @@ export default {
         };
     },
     methods: {
-        async getBanner() {
-            let banner = await this.axios.get("/banner?type=0");
-            this.banner = banner.data.body.banners;
-
-        },
-        async getRecommendPlaylist() {
-            let getCookie = window.sessionStorage.getItem("cookie");
-            console.log(getCookie);
-            if (this.$root.login && getCookie ) {
-                console.log("??????????????????");
-                let playList = await this.axios.post("/recommend/resource", {
-                    withCredentials: true,
-                    date: +new Date(),
-                    cookie: window.sessionStorage.getItem("cookie"),
-                });
-                this.recommendPlaylist = playList.data.body.recommend;
-                this.isLogin = true;
-            }
-        },
     },
     created() {
-        this.getBanner();
+        request.getBanner.call(this);
+        request.getRecommendPlaylist.call(this);
         this.isLogin = true;
-    },
-    watch:{
-        isLogin(){
-            console.log("isLogin")
-        }
     }
-
 };
 </script>
 

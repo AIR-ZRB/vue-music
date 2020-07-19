@@ -2,13 +2,18 @@
     <div class="login" @click="loginClick" v-if="_props.loginIsShow">
         <div class="login-box">
             <h2>手机登录</h2>
-          
 
-            <el-input v-model.trim="username" placeholder="请输入账号"></el-input>
-            <el-input v-model.trim="password" placeholder="请输入密码" type="password"></el-input>
+            <el-input
+                v-model.trim="username"
+                placeholder="请输入账号"
+            ></el-input>
+            <el-input
+                v-model.trim="password"
+                placeholder="请输入密码"
+                type="password"
+            ></el-input>
 
-          
-            <el-button type="success" class="login-submit" >Login</el-button>
+            <el-button type="success" class="login-submit">Login</el-button>
         </div>
     </div>
 </template>
@@ -18,7 +23,8 @@ export default {
     props: ["loginIsShow"],
     data() {
         return {
-           
+            username: "",
+            password: "",
         };
     },
     methods: {
@@ -49,7 +55,10 @@ export default {
                     "update:username",
                     loginRes.data.body.profile.nickname
                 );
-                this.$emit("update:avatarUrl",loginRes.data.body.profile.avatarUrl);
+                this.$emit(
+                    "update:avatarUrl",
+                    loginRes.data.body.profile.avatarUrl
+                );
                 this.$emit("update:loginIsShow", false);
             }
         },
@@ -85,7 +94,6 @@ export default {
         button {
             // padding: 0;
             height: 40px;
-
         }
     }
 }

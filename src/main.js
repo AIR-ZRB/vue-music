@@ -34,6 +34,7 @@ new Vue({
             MusicAvatar: "空",
             MusicVolume: 0.5,
             MusicLoading: false,
+            MusicList: []
         },
     },
     render: (h) => h(App),

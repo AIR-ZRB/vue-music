@@ -10,29 +10,15 @@
                 <div class="formattingDynamic">
                     <p>{{ formattingDynamic }}</p>
                     <div class="shareMusic" v-if="msg.song">
-                        <img :src="msg.song.album.picUrl" alt="">
+                        <img :src="msg.song.album.picUrl" alt="" />
                         <div>
-                            <p>{{msg.song.album.name}}</p>
-                            <p>{{msg.song.album.artists[0].name}}</p>
+                            <p>{{ msg.song.album.name }}</p>
+                            <p>{{ msg.song.album.artists[0].name }}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- <div class="header-message">
-            <img :src="dynamic.tailMark.circle.imageUrl" alt="">
-            <div>
-                <p class="name">{{dynamic.tailMark.markTitle}}</p>
-                <p class="time">{{new Date(dynamic.eventTime)}}</p>
-            </div>
-        </div> -->
-
-        
-
-
-
-
     </div>
 </template>
 
@@ -41,24 +27,16 @@ export default {
     props: ["dynamic"],
     data() {
         return {
-            msg: ""
+            msg: "",
         };
     },
     computed: {
         formattingDynamic() {
             return JSON.parse(this._props.dynamic.json).msg;
         },
-        // shareMusic(){
-        //     re
-        // }
     },
-    methods: {},
     created() {
-        console.log(JSON.parse(this._props.dynamic.json));
         this.msg = JSON.parse(this._props.dynamic.json);
-        
-    },
-    mounted() {
     },
 };
 </script>
@@ -89,11 +67,11 @@ export default {
         }
         .formattingDynamic {
             margin-top: 20px;
-width: 100%;
+            width: 100%;
 
             .shareMusic {
                 width: 100%;
-        margin-top: 10px;
+                margin-top: 10px;
                 padding: 10px;
                 background: #eee;
                 display: flex;
@@ -101,9 +79,7 @@ width: 100%;
                 img {
                     border-radius: 0;
                 }
-
             }
-
         }
     }
 }

@@ -20,30 +20,15 @@
 </template>
 
 <script>
+import request from "../request";
 export default {
     data() {
         return {
             fm: [],
         };
     },
-    methods: {
-        async getFM() {
-            const getFM = await this.axios.get("/personal_fm", {
-                withCredentials: true,
-                date: +new Date(),
-                cookie: window.sessionStorage.getItem("cookie"),
-            });
-
-            this.fm = getFM.data.body.data;
-            // console.log(this.fm);
-
-            // this.fn[0].name
-            // this.fm[0].album.picUrl
-            // this.fm[0].mMusic.id
-        },
-    },
     created() {
-        // this.getFM();
+        request.getFM.call(this);
     },
 };
 </script>

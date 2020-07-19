@@ -57,9 +57,15 @@
         <!-- 底部音乐控件 -->
         <div class="play-component">
             <div class="btn-ctrl">
-                <i class="el-icon-caret-left"></i>
-                <i class="el-icon-video-pause" @click="musicPlaying"></i>
-                <i class="el-icon-caret-right"></i>
+                <i
+                    class="el-icon-caret-left"
+                    @click="() => switchoverMusic('prev')"
+                ></i>
+                <i :class="playMusicMessage.icon" @click="musicPlaying"></i>
+                <i
+                    class="el-icon-caret-right"
+                    @click="() => switchoverMusic('next')"
+                ></i>
             </div>
             <div class="progress">
                 <img :src="$root.music.MusicPicture" alt="" />
@@ -82,6 +88,7 @@
 <script>
 import login from "../components/login";
 import loading from "../components/loading";
+import request from "../request";
 export default {
     data() {
         return {
@@ -95,15 +102,17 @@ export default {
             ],
             // 登录之后的用户信息
             userMessage: {
-                username: "",
-                avatarUrl: "",
-                isLogin: false,
+                username: "",           // 用户名
+                avatarUrl: "",          // 头像
+                isLogin: false,         // 是否登录
             },
             loginIsShow: true, // 登录框是否显示
             defalutRouter: "发现音乐", // 默认路由
             playMusicMessage: {
                 progress: 0,
                 volume: this.$root.music.MusicVolume,
+                playing: true,
+                icon: "el-icon-video-play"
             },
             timer: null,
             timerFlag: false,
@@ -113,24 +122,6 @@ export default {
     },
     methods: {
         // 获取用户歌单
-        async getUserMusicList() {
-            const userMusicList = await this.axios.post("/user/playlist", {
-                uid: window.sessionStorage.getItem("userId"), // 用户ID
-            });
-            const getPlayList = userMusicList.data.body.playlist;
-
-            const pushSongList = getPlayList.map((item) => {
-                return {
-                    cn: item.name,
-                    en: `songList/${item.id}`,
-                    icon: "el-icon-magic-stick",
-                    // coverImgUrl: item.coverImgUrl,
-                };
-            });
-            this.listMenu = this.listMenu.concat(pushSongList);
-
-    
-        },
         playing() {
             if (!this.$refs.audio.duration) return;
 
@@ -141,32 +132,78 @@ export default {
                 this.currentProgress = 0;
                 this.timerFlag = false;
                 console.log("切歌");
+                 this.playMusicMessage.icon = "el-icon-video-pause";
             }
         },
         timerFunction() {
-            const duration = this.$refs.audio.duration;
-            console.log(duration);
+            const duration = this.$refs.audio.duration || 0;
+            console.log("持续时间" + duration);
             this.currentProgress++;
-            let proportion = parseInt((this.currentProgress / duration) * 100);
+            let proportion =
+                parseInt((this.currentProgress / duration) * 100) || 0;
             this.playMusicMessage.progress =
                 proportion > 100 ? 100 : proportion;
 
-            // 当比例到达100时，停止定时器，且清空
+            // 当比例到达100时，停止定时器，且清空,自动播放下一首
             if (proportion >= 100) {
                 clearInterval(this.timer);
                 this.timer = null;
                 this.timerFlag = true;
+                this.switchoverMusic("next");
             }
+
         },
         // 封装promise
         isLogin() {
             const getCookie = window.sessionStorage.getItem("cookie");
             if (getCookie && this.userMessage.isLogin === false) {
-                this.getUserMusicList();
+                // this.getUserMusicList();
+                request.getUserMusicList.call(this);
                 this.userMessage.isLogin = true;
             }
         },
-        musicPlaying() {},
+        musicPlaying() {
+            if (this.playMusicMessage.playing) {
+                this.$refs.audio.pause();
+                clearInterval(this.timer);
+                this.playMusicMessage.icon = "el-icon-video-play";
+            } else {
+                this.$refs.audio.play();
+                this.timer = setInterval(this.timerFunction, 1000);
+                this.playMusicMessage.icon = "el-icon-video-pause";
+            }
+            this.playMusicMessage.playing = !this.playMusicMessage.playing;
+        },
+        switchoverMusic(direction) {
+            let index = this.$root.music.MusicList.findIndex((item) => {
+                return item.id === this.$root.music.MusicId;
+            });
+
+            switch (direction) {
+                case "prev":
+                    index -= 1;
+                    break;
+                case "next":
+                    index += 1;
+                    break;
+            }
+
+            if(!this.$root.music.MusicList[index]){
+                this.$message.error("已经到顶了")
+                return ;
+            }
+
+
+
+            let currentMusicId = {
+                id: this.$root.music.MusicList[index].id,
+                name: this.$root.music.MusicList[index].name,
+                author: this.$root.music.MusicList[index].author,
+                musicPicture: this.$root.music.MusicList[index].musicPicture,
+            };
+            console.log(this.$root.music.MusicList[index]);
+            request.getMusicUrl.call(this, currentMusicId);
+        },
     },
     updated() {
         // 点击新歌曲，currentMusic的url更改，触发
@@ -302,16 +339,5 @@ export default {
             }
         }
     }
-}
-
-*::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-*::-webkit-scrollbar-thumb {
-    background: var(--theme-color);
-}
-*::-webkit-scrollbar-track {
-    background-color: transparent;
 }
 </style>

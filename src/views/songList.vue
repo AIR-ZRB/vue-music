@@ -15,7 +15,9 @@
                 <div class="description"></div>
             </div>
         </div>
+
         <div class="songlist-content">
+            <!-- 渲染歌曲 -->
             <musicList :showItems="showItems" :musicMessage="musicMessage" />
         </div>
     </div>
@@ -23,7 +25,6 @@
 
 <script>
 import musicList from "../components/musicList";
-
 export default {
     data() {
         return {
@@ -31,8 +32,6 @@ export default {
                 { cn: "音乐标题", en: "name" },
                 { cn: "歌手", en: "author" },
                 { cn: "专辑", en: "album" },
-                // { cn: "操作", en: "?" },
-                // { cn: "音乐下载地址", en: "url" },
             ],
             detailsSongList: [], // 歌单详细信息
             songListImage: "", // 歌单的图片
@@ -103,6 +102,7 @@ export default {
                     });
                 });
                 this.musicMessage = temporary;
+                this.$root.music.MusicList = temporary;
                 // console.log(this.musicMessage);
             }
             
@@ -114,6 +114,7 @@ export default {
         this.getUserSongList();
     },
     watch: {
+        // 切换歌单时，不会重新渲染组件，需手动监听
         $route() {
             this.getUserSongList();
         },
@@ -125,6 +126,7 @@ export default {
 .songlist {
     .songlist-top {
         display: flex;
+        margin-bottom: 20px;
 
         .songlist-image {
             width: 250px;
