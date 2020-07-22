@@ -34,6 +34,7 @@
                 </div>
             </el-header>
             <el-container>
+                <!-- 左侧列表 -->
                 <el-aside width="250px">
                     <el-col>
                         <el-menu :default-active="defalutRouter">
@@ -51,6 +52,7 @@
                     </el-col>
                 </el-aside>
 
+                <!-- 右侧内容主题区域 -->
                 <el-main>
                     <router-view></router-view>
                     <loading />
@@ -141,44 +143,53 @@ export default {
                 playing: true,
                 icon: "el-icon-video-play",
             },
-            timer: null,
-            timerFlag: false,
-            currentMusic: "",
-            currentProgress: 0,
+            timer: null, // 定时器
+            currentMusic: "", // 目前播放音乐的URL
+            currentProgress: 0, // 目前进度条的进度
         };
     },
+
     methods: {
         // 获取用户歌单
         playing() {
             if (!this.$refs.audio.duration) return;
-
+            /**
+             * 1. 当前音乐跟最新的音乐地址不一样时触发
+             * 2. 清除原本的定时器，再启动
+             * 3. 把进度调成0，并且切换成播放标识
+             */
             if (this.$root.music.MusicUrl != this.currentMusic) {
                 clearInterval(this.timer);
                 this.timer = setInterval(this.timerFunction, 1000);
                 this.currentMusic = this.$root.music.MusicUrl;
                 this.currentProgress = 0;
-                this.timerFlag = false;
                 console.log("切歌");
                 this.playMusicMessage.icon = "el-icon-video-pause";
             }
         },
+        // 播放定时器里的函数
         timerFunction() {
+            /**
+             * 1. 获取持续事件，如果未获取到则使用0，否则会出现NaN
+             * 2. 让进度条跑起来
+             * 3. 进度条不能超过100%
+             */
             const duration = this.$refs.audio.duration || 0;
-            console.log("持续时间" + duration);
             this.currentProgress++;
             let proportion =
                 parseInt((this.currentProgress / duration) * 100) || 0;
             this.playMusicMessage.progress =
                 proportion > 100 ? 100 : proportion;
 
+            console.log("持续时间" + duration);
             // 当比例到达100时，停止定时器，且清空,自动播放下一首
             if (proportion >= 100) {
                 clearInterval(this.timer);
                 this.timer = null;
-                this.timerFlag = true;
                 this.switchoverMusic("next");
             }
         },
+        // 进来时的登录
         isLogin() {
             const getCookie = window.sessionStorage.getItem("cookie");
             if (getCookie && this.userMessage.isLogin === false) {
@@ -186,6 +197,7 @@ export default {
                 this.userMessage.isLogin = true;
             }
         },
+        // 音乐组件的暂停与播放
         musicPlaying() {
             if (this.playMusicMessage.playing) {
                 this.$refs.audio.pause();
@@ -198,7 +210,12 @@ export default {
             }
             this.playMusicMessage.playing = !this.playMusicMessage.playing;
         },
+        // 音乐组件的上/下一首功能
         switchoverMusic(direction) {
+            /**
+             * 1. 从当前音乐歌单内获取到当前播放的索引
+             * 2. 通过获取到相对应的索引获取到歌曲
+             */
             let index = this.$root.music.MusicList.findIndex((item) => {
                 return item.id === this.$root.music.MusicId;
             });
@@ -250,7 +267,6 @@ export default {
         // 清除之前的缓存Cookie和UserId，不能从Cookie登录，每次进来都需要重新登录
         window.sessionStorage.removeItem("cookie");
         window.sessionStorage.removeItem("userId");
-
         this.$router.push("/DiscovrMusic");
 
         // 主题色
@@ -306,10 +322,6 @@ export default {
                 height: 100%;
                 color: var(--theme-color-light);
             }
-            transition: all 0.3s;
-            &:hover {
-                // transform: translate(10px)
-            }
         }
     }
 
@@ -320,6 +332,7 @@ export default {
     .play-component {
         width: 100%;
         height: 50px;
+        min-width: 1400px;
         position: fixed;
         bottom: 0;
         left: 0;
