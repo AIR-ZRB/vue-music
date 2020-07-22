@@ -3,12 +3,31 @@
         <el-container>
             <el-header>
                 <h1>青空云音乐</h1>
+
+                <el-dropdown @command="toggleTheme" trigger="click">
+                    <el-button type="primary" icon="el-icon-brush">
+                        <span>{{ currentTheme }}</span>
+                        <i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                            v-for="item in themeColor"
+                            :key="item.cn"
+                            :command="item"
+                            >{{ item.cn }}</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+
+                <!-- 登录按钮 -->
                 <el-button
                     plain
                     @click="() => (this.loginIsShow = true)"
                     v-if="!userMessage.username"
                     >Login</el-button
                 >
+
+                <!-- 登录完后的信息 -->
                 <div class="user-message" v-if="userMessage.username">
                     <img :src="userMessage.avatarUrl" alt="" class="avatar" />
                     <p>{{ userMessage.username }}</p>
@@ -100,11 +119,19 @@ export default {
                 { cn: "朋友", en: "friends", icon: "el-icon-user" },
                 { cn: "音乐云盘", en: "cloud", icon: "el-icon-cloudy" },
             ],
+            // 主题色
+            currentTheme: "清新绿",
+            themeColor: [
+                { cn: "炫酷黑", en: "theme-black" },
+                { cn: "天空蓝", en: "theme-blue" },
+                { cn: "清新绿", en: "theme-green" },
+                { cn: "可爱粉", en: "theme-pink" },
+            ],
             // 登录之后的用户信息
             userMessage: {
-                username: "",           // 用户名
-                avatarUrl: "",          // 头像
-                isLogin: false,         // 是否登录
+                username: "", // 用户名
+                avatarUrl: "", // 头像
+                isLogin: false, // 是否登录
             },
             loginIsShow: true, // 登录框是否显示
             defalutRouter: "发现音乐", // 默认路由
@@ -112,7 +139,7 @@ export default {
                 progress: 0,
                 volume: this.$root.music.MusicVolume,
                 playing: true,
-                icon: "el-icon-video-play"
+                icon: "el-icon-video-play",
             },
             timer: null,
             timerFlag: false,
@@ -132,7 +159,7 @@ export default {
                 this.currentProgress = 0;
                 this.timerFlag = false;
                 console.log("切歌");
-                 this.playMusicMessage.icon = "el-icon-video-pause";
+                this.playMusicMessage.icon = "el-icon-video-pause";
             }
         },
         timerFunction() {
@@ -151,13 +178,10 @@ export default {
                 this.timerFlag = true;
                 this.switchoverMusic("next");
             }
-
         },
-        // 封装promise
         isLogin() {
             const getCookie = window.sessionStorage.getItem("cookie");
             if (getCookie && this.userMessage.isLogin === false) {
-                // this.getUserMusicList();
                 request.getUserMusicList.call(this);
                 this.userMessage.isLogin = true;
             }
@@ -188,12 +212,10 @@ export default {
                     break;
             }
 
-            if(!this.$root.music.MusicList[index]){
-                this.$message.error("已经到顶了")
-                return ;
+            if (!this.$root.music.MusicList[index]) {
+                this.$message.error("已经到顶了");
+                return;
             }
-
-
 
             let currentMusicId = {
                 id: this.$root.music.MusicList[index].id,
@@ -203,6 +225,14 @@ export default {
             };
             console.log(this.$root.music.MusicList[index]);
             request.getMusicUrl.call(this, currentMusicId);
+        },
+        // 切换主题色
+        toggleTheme(theme) {
+            this.currentTheme = theme.cn;
+
+            // 主题色
+            const LinkCss = document.getElementById("theme");
+            LinkCss.href = require(`../assets/css/${theme.en}.css`);
         },
     },
     updated() {
@@ -251,6 +281,10 @@ export default {
                 margin-right: 15px;
             }
             color: var(--theme-text-color);
+        }
+        button {
+            background: var(--theme-color);
+            border: none;
         }
     }
 

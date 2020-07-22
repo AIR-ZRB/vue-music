@@ -23,8 +23,7 @@ export default {
     props: ["loginIsShow"],
     data() {
         return {
-            username: "",
-            password: "",
+           
         };
     },
     methods: {
