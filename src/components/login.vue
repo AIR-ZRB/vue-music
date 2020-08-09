@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import Bus from "../bus";
 export default {
     props: ["loginIsShow"],
     data() {
@@ -28,38 +29,44 @@ export default {
         };
     },
     methods: {
-        async loginClick(event) {
-            // console.log(event)
+        // 如果账号密码错误，无法捕获--------------------------
+        loginClick(event) {
             const targetClass = event.target.className;
             targetClass === "login" && this.$emit("update:loginIsShow", false);
 
             if (targetClass.search("login-submit") > 0) {
-                const loginRes = await this.axios.post(`/login/cellphone`, {
-                    phone: this.username,
-                    password: this.password,
-                    url: +new Date(),
-                });
+                this.axios
+                    .post(`/login/cellphone`, {
+                        phone: this.username,
+                        password: this.password,
+                        url: +new Date(),
+                    })
+                    .then((data) => {
+                        let loginRes = data;
+                        let userId = loginRes.data.body.account.id;
+                        let cookie = "";
+                        for (let item of loginRes.data.cookie) {
+                            cookie += item.replace("Path=/", "");
+                        }
+                        // 登录完成把cookie保存来，如果遇到需要登录才能获取的数据，则url则携带cookie
+                        //  用户Id用来请求喜欢音乐的歌单使用
+                        window.sessionStorage.setItem("cookie", cookie);
+                        window.sessionStorage.setItem("userId", userId);
+                        this.$root.login = true;
 
-                // console.log(loginRes.data)
-                let userId = loginRes.data.body.account.id;
-                let cookie = "";
-                for (let item of loginRes.data.cookie) {
-                    cookie += item.replace("Path=/", "");
-                }
-                // 登录完成把cookie保存来，如果遇到需要登录才能获取的数据，则url则携带cookie
-                //  用户Id用来请求喜欢音乐的歌单使用
-                window.sessionStorage.setItem("cookie", cookie);
-                window.sessionStorage.setItem("userId", userId);
-                this.$root.login = true;
-                this.$emit(
-                    "update:username",
-                    loginRes.data.body.profile.nickname
-                );
-                this.$emit(
-                    "update:avatarUrl",
-                    loginRes.data.body.profile.avatarUrl
-                );
-                this.$emit("update:loginIsShow", false);
+                        const username = loginRes.data.body.profile.nickname;
+                        const avatarUrl = loginRes.data.body.profile.avatarUrl;
+
+                        this.$emit("update:username", username);
+                        this.$emit("update:avatarUrl", avatarUrl);
+                        this.$emit("update:loginIsShow", false);
+
+                        Bus.$emit("isLogin",true);
+                    })
+                    .catch(() => {
+                        this.$message.error("账号/密码错误");
+                    });
+
             }
         },
     },

@@ -110,6 +110,7 @@
 import login from "../components/login";
 import loading from "../components/loading";
 import request from "../request";
+import Bus from "../bus";
 export default {
     data() {
         return {
@@ -146,6 +147,7 @@ export default {
             timer: null, // 定时器
             currentMusic: "", // 目前播放音乐的URL
             currentProgress: 0, // 目前进度条的进度
+            index: 0, // 当前歌曲的索引
         };
     },
 
@@ -158,12 +160,13 @@ export default {
              * 2. 清除原本的定时器，再启动
              * 3. 把进度调成0，并且切换成播放标识
              */
+
             if (this.$root.music.MusicUrl != this.currentMusic) {
+                console.log("切歌歌曲");
                 clearInterval(this.timer);
                 this.timer = setInterval(this.timerFunction, 1000);
                 this.currentMusic = this.$root.music.MusicUrl;
                 this.currentProgress = 0;
-                console.log("切歌");
                 this.playMusicMessage.icon = "el-icon-video-pause";
             }
         },
@@ -216,32 +219,34 @@ export default {
              * 1. 从当前音乐歌单内获取到当前播放的索引
              * 2. 通过获取到相对应的索引获取到歌曲
              */
-            let index = this.$root.music.MusicList.findIndex((item) => {
+            this.index = this.$root.music.MusicList.findIndex((item) => {
                 return item.id === this.$root.music.MusicId;
             });
+            console.log(this.index);
+            direction === "prev" ? (this.index -= 1) : (this.index += 1);
 
-            switch (direction) {
-                case "prev":
-                    index -= 1;
-                    break;
-                case "next":
-                    index += 1;
-                    break;
-            }
-
-            if (!this.$root.music.MusicList[index]) {
+            if (!this.$root.music.MusicList[this.index]) {
                 this.$message.error("已经到顶了");
                 return;
             }
 
+            // if (!this.$root.MusicUrl) {
+            //     this.switchoverMusic("nextMusic");
+            //     return;
+            // }
+
             let currentMusicId = {
-                id: this.$root.music.MusicList[index].id,
-                name: this.$root.music.MusicList[index].name,
-                author: this.$root.music.MusicList[index].author,
-                musicPicture: this.$root.music.MusicList[index].musicPicture,
+                id: this.$root.music.MusicList[this.index].id,
+                name: this.$root.music.MusicList[this.index].name,
+                author: this.$root.music.MusicList[this.index].author,
+                musicPicture: this.$root.music.MusicList[this.index]
+                    .musicPicture,
             };
-            console.log(this.$root.music.MusicList[index]);
-            request.getMusicUrl.call(this, currentMusicId);
+
+            this.$nextTick(() => {
+                // console.log(this.$root.music.MusicList[ this.index]);
+                request.getMusicUrl.call(this, currentMusicId);
+            });
         },
         // 切换主题色
         toggleTheme(theme) {
@@ -268,6 +273,8 @@ export default {
         window.sessionStorage.removeItem("cookie");
         window.sessionStorage.removeItem("userId");
         this.$router.push("/DiscovrMusic");
+
+        Bus.$on("nextMusic", () => this.switchoverMusic("next"));
 
         // 主题色
         const LinkCss = document.getElementById("theme");

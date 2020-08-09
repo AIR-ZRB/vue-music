@@ -24,13 +24,14 @@
             <div v-if="recommendPlaylist.length === 0 ? true : false">
                 你还未登录，此功能无法使用
             </div>
-
-            <div class="recommend-playlist-box"  v-if="recommendPlaylist.length === 0 ? false : true">
+            <div class="recommend-playlist-box" v-else>
                 <el-row v-for="item in recommendPlaylist" :key="item.name">
                     <el-col>
                         <el-card :body-style="{ padding: '0px' }">
-                            <img :src="item.picUrl" class="image" />
-                            <span>{{ item.name }}</span>
+                            <router-link :to="'/songList/' + item.id">
+                                <img :src="item.picUrl" class="image" />
+                                <span>{{ item.name }}</span>
+                            </router-link>
                         </el-card>
                     </el-col>
                 </el-row>
@@ -41,6 +42,7 @@
 
 <script>
 import request from "../request";
+import Bus from "../bus";
 export default {
     data() {
         return {
@@ -57,13 +59,19 @@ export default {
             recommendPlaylist: [],
         };
     },
-    methods: {
-    },
     created() {
+        Bus.$on("isLogin", () => {
+            this.isLogin = true;
+            request.getRecommendPlaylist.call(this);
+        });
         request.getBanner.call(this);
         request.getRecommendPlaylist.call(this);
-        this.isLogin = true;
-    }
+    },
+    updated() {
+        if (this.recommendPlaylist.length === 0 && this.isLogin === true) {
+            request.getRecommendPlaylist.call(this);
+        }
+    },
 };
 </script>
 
@@ -90,24 +98,30 @@ export default {
 
     .recommend-playlist {
         .recommend-playlist-box {
-            display: flex;
-            flex-wrap: wrap;
             margin-top: 30px;
-            justify-content: space-around;
 
             .el-row {
-                width: 25%;
+                float: left;
+                width: 20%;
                 margin-bottom: 20px;
-
                 .el-card {
                     border: none;
                     box-shadow: none;
                 }
 
+                a {
+                    text-decoration: none;
+                    color: #000;
+                }
                 img {
                     width: 200px;
                     height: 200px;
+                    transition: all 0.3s;
+                    &:hover {
+                        transform: scale(1.1);
+                    }
                 }
+
                 span {
                     display: block;
                     height: 50px;

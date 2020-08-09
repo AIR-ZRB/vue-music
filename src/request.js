@@ -1,3 +1,6 @@
+const Bus = require("./bus.js").default;
+// console.log(Bus);
+
 // 提取一些不需要传参的请求
 module.exports = {
     // 获取用户歌单
@@ -63,15 +66,12 @@ module.exports = {
         this.fm = getFM.data.body.data;
     },
 
-     // 获取音乐播放地址
-     async getMusicUrl(musicMessage) {
+    // 获取音乐播放地址
+    async getMusicUrl(musicMessage) {
         this.$root.music.MusicLoading = true;
-        let musicUrl = await this.axios.post(
-            `/song/url?id=${musicMessage.id}`
-        );
-     
-
+        let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
         this.$root.music.MusicUrl = "";
+        console.log("音乐的播放地址" + musicUrl.data.body.data[0].url);
 
         if (musicUrl.data.body.data[0].url) {
             this.$root.music.MusicId = musicMessage.id;
@@ -80,14 +80,13 @@ module.exports = {
             this.$root.music.MusicPicture = musicMessage.musicPicture;
             this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
         }
-        this.$nextTick(() => {
-            // 获取歌曲的URL
-            !this.$root.music.MusicUrl &&
-                this.$message.error("没有版权或者VIP音乐");
-            this.$root.music.MusicLoading = false;
-        });
+
+        // 获取歌曲的URL
+        if (!this.$root.music.MusicUrl) {
+            this.$message.error("没有版权或者VIP音乐");
+            Bus.$emit("nextMusic");
+            return;
+        }
+        this.$root.music.MusicLoading = false;
     },
-}
-
-
-
+};
