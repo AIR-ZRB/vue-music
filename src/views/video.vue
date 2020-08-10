@@ -3,19 +3,17 @@
         <h2>视频</h2>
         <!-- 标签区域, -->
         <div class="tag-group">
-            <el-button @click="drawer = true">
+            <el-button @click="outerVisible = true">
                 {{ currentSelectText }}
             </el-button>
 
             <!-- 下拉菜单 -->
-            <el-drawer
+
+            <el-dialog
+                width="80%"
                 title="请选择标签"
-                direction="ttb"
-                :visible.sync="drawer"
-                :before-close="handleClose"
-                :modal="false"
-                size="40%"
-                class="tag-drawer"
+                :visible.sync="outerVisible"
+                append-to-body
             >
                 <el-tag
                     v-for="item in tagsList"
@@ -23,7 +21,7 @@
                     :key="item.name"
                     >{{ item.name }}</el-tag
                 >
-            </el-drawer>
+            </el-dialog>
         </div>
 
         <!-- 视频区域 -->
@@ -31,8 +29,10 @@
             <el-row v-for="item in videoList" :key="item.data.coverUrl">
                 <el-col>
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="item.data.coverUrl" class="image" />
-                        <p>{{ item.data.title }}</p>
+                        <router-link :to="'/playVideo/' + item.data.vid">
+                            <img :src="item.data.coverUrl" class="image" />
+                            <p>{{ item.data.title }}</p>
+                        </router-link>
                     </el-card>
                 </el-col>
             </el-row>
@@ -47,9 +47,15 @@ export default {
             tagsList: [],
             videoList: [],
             currentSelect: [],
-            drawer: false, // 控制抽屉是否打开
             currentSelectText: "选择标签",
+            outerVisible: false,
+            selectTagId: 4108  // 选择的ID，默认动漫Id
         };
+    },
+    watch:{
+        selectTagId(){
+            this.getVideoList();
+        }
     },
     methods: {
         async getTags() {
@@ -57,32 +63,26 @@ export default {
             const getTags = await this.axios.get("/video/group/list", {
                 date: +new Date(),
                 cookie: window.sessionStorage.getItem("cookie"),
-                id: 1,
+                id: 1,  // 1代表PC版
             });
             this.tagsList = getTags.data.body.data;
         },
         async getVideoList() {
             // 获取一个标签下的视频
             // 能传入offset
-            const videoList = await this.axios.post("video/group", {
-                date: +new Date(),
-                withCredentials: true,
-                id: 57104,
+            const videoList = await this.axios.post(`/video/group?id=${this.selectTagId}`, {
                 cookie: window.sessionStorage.getItem("cookie"),
             });
             this.videoList = videoList.data.body.datas;
         },
+        // 获取点击之后的tag
         getCurrentSelectTags(event, data) {
             this.currentSelectText = data.name;
-            //    点击完之后不会自动关闭抽屉
-            //    this.handleClose();
-        },
-        handleClose(done) {
-            done();
+            this.selectTagId = data.id;
+            this.outerVisible = false;
         },
     },
     created() {
-        // console.log("video");
         this.getVideoList();
         this.getTags();
     },
@@ -97,28 +97,15 @@ export default {
         color: var(--theme-text-color);
         margin-bottom: 10px;
     }
-    .el-drawer {
-        padding: 20px;
-        height: 40%;
-        header {
-            padding: 0;
-            color: #000;
-        }
-    }
-
-    .el-tag {
-        margin: 0 5px;
-        background: var(--theme-color);
-        color: var(--theme-text-color);
-        cursor: pointer;
-    }
-
-    .select-tags {
-        padding: 0;
-        margin: 0;
-
+}
+// 下拉菜单样式
+.el-dialog {
+    .el-dialog__body {
         .el-tag {
-            margin: 0 5px 0 0;
+            margin: 5px;
+            background: var(--theme-color);
+            color: var(--theme-text-color);
+            cursor: pointer;
         }
     }
 }
@@ -136,9 +123,18 @@ export default {
             box-shadow: none;
         }
 
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
         img {
             width: 275px;
             height: 150px;
+            transition: all 0.3s;
+            &:hover {
+                transform: scale(1.1);
+            }
         }
         p {
             width: 275px;

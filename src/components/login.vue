@@ -24,8 +24,8 @@ export default {
     props: ["loginIsShow"],
     data() {
         return {
-            username: "",
-            password: "",
+            username: "15889580759",
+            password: "zhu123",
         };
     },
     methods: {

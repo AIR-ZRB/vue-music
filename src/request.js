@@ -64,6 +64,7 @@ module.exports = {
             cookie: window.sessionStorage.getItem("cookie"),
         });
         this.fm = getFM.data.body.data;
+        console.log(this.fm);
     },
 
     // 获取音乐播放地址
@@ -81,7 +82,7 @@ module.exports = {
             this.$root.music.MusicUrl = musicUrl.data.body.data[0].url;
         }
 
-        // 获取歌曲的URL
+        // 获取歌曲的URL，如果没有播放地址，则下一首
         if (!this.$root.music.MusicUrl) {
             this.$message.error("没有版权或者VIP音乐");
             Bus.$emit("nextMusic");

@@ -147,7 +147,7 @@ export default {
             timer: null, // 定时器
             currentMusic: "", // 目前播放音乐的URL
             currentProgress: 0, // 目前进度条的进度
-            index: 0, // 当前歌曲的索引
+            index: "", // 当前歌曲的索引
         };
     },
 
@@ -218,34 +218,28 @@ export default {
             /**
              * 1. 从当前音乐歌单内获取到当前播放的索引
              * 2. 通过获取到相对应的索引获取到歌曲
+             * 3. this.index只需要获得一次不然会进入死循环
              */
-            this.index = this.$root.music.MusicList.findIndex((item) => {
-                return item.id === this.$root.music.MusicId;
-            });
-            console.log(this.index);
-            direction === "prev" ? (this.index -= 1) : (this.index += 1);
 
+            if (!this.index) {
+                this.index = this.$root.music.MusicList.findIndex((item) => {
+                    return item.id === this.$root.music.MusicId;
+                });
+            }
+
+            // 如果没有列表已经没有上/下一首时提醒
             if (!this.$root.music.MusicList[this.index]) {
                 this.$message.error("已经到顶了");
                 return;
             }
 
-            // if (!this.$root.MusicUrl) {
-            //     this.switchoverMusic("nextMusic");
-            //     return;
-            // }
-
-            let currentMusicId = {
+            direction === "prev" ? (this.index -= 1) : (this.index += 1);
+            request.getMusicUrl.call(this, {
                 id: this.$root.music.MusicList[this.index].id,
                 name: this.$root.music.MusicList[this.index].name,
                 author: this.$root.music.MusicList[this.index].author,
                 musicPicture: this.$root.music.MusicList[this.index]
                     .musicPicture,
-            };
-
-            this.$nextTick(() => {
-                // console.log(this.$root.music.MusicList[ this.index]);
-                request.getMusicUrl.call(this, currentMusicId);
             });
         },
         // 切换主题色
@@ -264,10 +258,7 @@ export default {
         // 当登录时触发
         this.isLogin();
     },
-    components: {
-        login,
-        loading,
-    },
+    components: { login, loading },
     created() {
         // 清除之前的缓存Cookie和UserId，不能从Cookie登录，每次进来都需要重新登录
         window.sessionStorage.removeItem("cookie");

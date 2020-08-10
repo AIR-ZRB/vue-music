@@ -6,15 +6,18 @@
                 v-for="item in fm"
                 :key="item.album.picUrl"
                 :src="item.album.picUrl"
-                alt=""
             />
-
             <div class="button-group">
                 <el-button icon="el-icon-star-off" circle></el-button>
                 <el-button icon="el-icon-delete" circle></el-button>
                 <el-button icon="el-icon-d-arrow-right" circle></el-button>
                 <el-button icon="el-icon-more-outline" circle></el-button>
             </div>
+        </div>
+
+        <div class="music-message">
+            <p class="title"></p>
+            <p class="author"></p>
         </div>
     </div>
 </template>
@@ -35,6 +38,8 @@ export default {
 
 <style lang="scss">
 .music-picture {
+    width: 60%;
+    float: left;
     img {
         width: 300px;
         height: 300px;
@@ -51,5 +56,9 @@ export default {
             margin: 0 15px;
         }
     }
+}
+.music-message {
+    width: 40%;
+    float: left;
 }
 </style>

@@ -9,6 +9,8 @@ import video from "../views/video.vue";
 import friends from "../views/friends.vue";
 import cloud from "../views/cloud.vue";
 import songList from "../views/songList.vue";
+import playVideo from "../views/playVideo.vue";
+
 
 export default new VueRouter({
     mode: "hash",
@@ -24,9 +26,10 @@ export default new VueRouter({
                 { path: "/friends", component: friends },
                 { path: "/cloud", component: cloud },
                 { path: "/songList/*", component: songList },
+                { path: "/playVideo/*", component: playVideo },
             ],
         },
-        {
+        {   
             path: "*",
             redirect: "/DiscovrMusic",
         },
