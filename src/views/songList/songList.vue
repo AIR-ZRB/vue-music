@@ -4,15 +4,22 @@
             <img :src="songListImage" alt="" class="songlist-image" />
             <div>
                 <h3>{{ songListName }}</h3>
-                <p class="author">晴空_AIR</p>
+                <p class="author">
+                    <img :src="authorPicture" alt="" />
+                    <span class="author-name">{{ songListAuthor }}</span>
+                    <span>创建时间：{{ createdTime }}</span>
+                </p>
                 <div class="button-group">
                     <el-button icon="el-icon-caret-right">播放全部</el-button>
                     <el-button icon="el-icon-folder-add">收藏</el-button>
                     <el-button icon="el-icon-search">分享</el-button>
                     <el-button icon="el-icon-search">下载全部</el-button>
                 </div>
-                <div class="tags"></div>
-                <div class="description"></div>
+                <div class="tags">
+                    标签：
+                    <span v-for="item in tags" :key="item">{{ item }}/</span>
+                </div>
+                <div class="description">简介：{{ description }}</div>
             </div>
         </div>
 
@@ -24,7 +31,7 @@
 </template>
 
 <script>
-import musicList from "../components/musicList";
+import musicList from "./musicList";
 export default {
     data() {
         return {
@@ -32,12 +39,18 @@ export default {
                 { cn: "音乐标题", en: "name" },
                 { cn: "歌手", en: "author" },
                 { cn: "专辑", en: "album" },
+                // { cn: "下载", en: "download" },
             ],
             detailsSongList: [], // 歌单详细信息
             songListImage: "", // 歌单的图片
             songListName: "", // 歌单的名字
+            songListAuthor: "", // 歌单的创建者
+            authorPicture: "",
+            createdTime: "", // 创建时间
             musicMessage: [], // 歌曲的详细信息
-            musicShowQuantity: 20, // 一次性显示歌曲的数量
+            description: "", // 歌单简介
+            tags: [], // 歌单标签
+            musicShowCount: 20, // 一次性显示歌曲的数量
         };
     },
     components: {
@@ -46,7 +59,6 @@ export default {
     methods: {
         // 用于获取歌单的信息
         async getUserSongList() {
-            
             this.detailsSongList = [];
 
             // 加载动画
@@ -57,13 +69,22 @@ export default {
             getSongListId = getSongListId[getSongListId.length - 1];
 
             // 获取歌单里的所有歌曲
-            const detailsSongList = await this.axios.post(
+            let detailsSongList = await this.axios.post(
                 `/playlist/detail?id=${getSongListId}`
             );
-            this.detailsSongList = detailsSongList.data.body.playlist.trackIds;
 
-            this.songListImage = detailsSongList.data.body.playlist.coverImgUrl;
-            this.songListName = detailsSongList.data.body.playlist.name;
+            detailsSongList = detailsSongList.data.body;
+            console.log(detailsSongList);
+            this.songListAuthor = detailsSongList.playlist.creator.nickname;
+            this.authorPicture = detailsSongList.playlist.creator.avatarUrl;
+            this.createdTime = detailsSongList.playlist.creator.birthday;
+
+            this.description = detailsSongList.playlist.description;
+            this.tags = detailsSongList.playlist.tags;
+
+            this.detailsSongList = detailsSongList.playlist.trackIds;
+            this.songListImage = detailsSongList.playlist.coverImgUrl;
+            this.songListName = detailsSongList.playlist.name;
 
             this.$nextTick(() => {
                 let ids = "";
@@ -74,7 +95,6 @@ export default {
                 // console.log(ids.substr(0,ids.length-1))
                 this.getMusicMessage(ids.substr(0, ids.length - 1));
             });
-
         },
         // 用于获取音乐的详情信息
         async getMusicMessage(musicId) {
@@ -98,14 +118,12 @@ export default {
                         musicDescription: item.alia[0],
                         author: item.ar[0].name,
                         id: item.id,
-                        // time:
                     });
                 });
                 this.musicMessage = temporary;
                 this.$root.music.MusicList = temporary;
-                // console.log(this.musicMessage);
             }
-            
+
             // 加载动画停止
             this.$root.music.MusicLoading = false;
         },
@@ -134,9 +152,25 @@ export default {
             margin: 0 40px 0 0;
         }
 
+        h3 {
+            font-weight: 500;
+            font-size: 22px;
+        }
+
         .author {
-            margin: 10px 0;
-            line-height: 40px;
+            margin: 20px 0;
+            // line-height: 40px;
+            display: flex;
+            align-items: center;
+            img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+            .author-name {
+                margin-right: 30px;
+            }
         }
 
         .button-group {
@@ -144,6 +178,14 @@ export default {
                 background: var(--theme-color);
                 color: var(--theme-text-color);
             }
+        }
+
+        .tags,
+        .description {
+            font-size: 14px;
+        }
+        .tags {
+            margin: 30px 0 10px;
         }
     }
 }

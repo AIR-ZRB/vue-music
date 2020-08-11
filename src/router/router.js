@@ -5,11 +5,15 @@ Vue.use(VueRouter);
 import home from "../views/home.vue";
 import DiscovrMusic from "../views/DiscovrMusic.vue";
 import privateFM from "../views/privateFM.vue";
-import video from "../views/video.vue";
-import friends from "../views/friends.vue";
+
+import video from "../views/video/video.vue";
+import playVideo from "../views/video/playVideo.vue";
+
+import friends from "../views/friends/friends.vue";
 import cloud from "../views/cloud.vue";
-import songList from "../views/songList.vue";
-import playVideo from "../views/playVideo.vue";
+
+import songList from "../views/songList/songList.vue";
+
 
 
 export default new VueRouter({

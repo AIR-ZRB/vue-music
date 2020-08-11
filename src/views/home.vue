@@ -37,16 +37,17 @@
                 <!-- 左侧列表 -->
                 <el-aside width="250px">
                     <el-col>
-                        <el-menu :default-active="defalutRouter">
+                        <el-menu :default-active="defalutRouter" :router="true">
                             <el-menu-item
-                                :index="item.cn"
                                 v-for="item in listMenu"
                                 :key="item.cn"
+                                :index="item.cn"
+                                :route="'/' + item.en"
                             >
-                                <a :href="'#/' + item.en">
-                                    <i :class="item.icon"></i>
-                                    <span slot="title">{{ item.cn }}</span>
-                                </a>
+                                <!-- <a :href="'#/' + item.en"> -->
+                                <i :class="item.icon"></i>
+                                <span slot="title">{{ item.cn }}</span>
+                                <!-- </a> -->
                             </el-menu-item>
                         </el-menu>
                     </el-col>
@@ -76,33 +77,41 @@
         />
 
         <!-- 底部音乐控件 -->
-        <div class="play-component">
-            <div class="btn-ctrl">
-                <i
-                    class="el-icon-caret-left"
-                    @click="() => switchoverMusic('prev')"
-                ></i>
-                <i :class="playMusicMessage.icon" @click="musicPlaying"></i>
-                <i
-                    class="el-icon-caret-right"
-                    @click="() => switchoverMusic('next')"
-                ></i>
-            </div>
-            <div class="progress">
-                <img :src="$root.music.MusicPicture" alt="" />
-                <div class="music-message">
-                    <p>{{ $root.music.MusicName }}</p>
-                    <p>{{ $root.music.MusicAvatar }}</p>
+        <span v-show="!playCtrlIsShow" class="top-arrow" @click='playCtrlShow'>
+            <i class="el-icon-arrow-up" />
+        </span>
+        <transition name="fade">
+            <div class="play-component" v-show="playCtrlIsShow">
+                <div class="btn-ctrl">
+                    <i
+                        class="el-icon-caret-left"
+                        @click="() => switchoverMusic('prev')"
+                    />
+                    <i :class="playMusicMessage.icon" @click="musicPlaying" />
+                    <i
+                        class="el-icon-caret-right"
+                        @click="() => switchoverMusic('next')"
+                    />
                 </div>
-                <el-progress
-                    :percentage="playMusicMessage.progress"
-                ></el-progress>
+                <div class="progress">
+                    <img :src="$root.music.MusicPicture" alt="" />
+                    <div class="music-message">
+                        <p>{{ $root.music.MusicName }}</p>
+                        <p>{{ $root.music.MusicAvatar }}</p>
+                    </div>
+                    <el-progress
+                        :percentage="playMusicMessage.progress"
+                    ></el-progress>
+                </div>
+                <div class="voice-ctrl">
+                    <i class="el-icon-microphone"></i>
+                    <el-progress
+                        :show-text="false"
+                        :percentage="100"
+                    ></el-progress>
+                </div>
             </div>
-            <div class="voice-ctrl">
-                <i class="el-icon-microphone"></i>
-                <el-progress :show-text="false" :percentage="100"></el-progress>
-            </div>
-        </div>
+        </transition>
     </div>
 </template>
 
@@ -148,6 +157,7 @@ export default {
             currentMusic: "", // 目前播放音乐的URL
             currentProgress: 0, // 目前进度条的进度
             index: "", // 当前歌曲的索引
+            playCtrlIsShow: true,
         };
     },
 
@@ -242,6 +252,9 @@ export default {
                     .musicPicture,
             });
         },
+        playCtrlShow(){
+              this.playCtrlIsShow = !this.playCtrlIsShow;
+        },
         // 切换主题色
         toggleTheme(theme) {
             this.currentTheme = theme.cn;
@@ -266,6 +279,10 @@ export default {
         this.$router.push("/DiscovrMusic");
 
         Bus.$on("nextMusic", () => this.switchoverMusic("next"));
+
+        setTimeout(() => {
+            this.playCtrlIsShow = false;
+        }, 2000);
 
         // 主题色
         const LinkCss = document.getElementById("theme");
@@ -312,14 +329,16 @@ export default {
             text-decoration: none;
             color: #000;
         }
+        .el-menu-item {
+            white-space: nowrap; //不换行
+            overflow: hidden; //超出的部分隐藏
+            display: block; //以块级显示
+            text-overflow: ellipsis; //超出的部分 ... 显示
+        }
+
         .el-menu-item.is-active {
-            // color: var(--theme-color);
-            a {
-                display: inline-block;
-                width: 100%;
-                height: 100%;
-                color: var(--theme-color-light);
-            }
+            color: var(--theme-color);
+            background: none;
         }
     }
 
@@ -327,6 +346,21 @@ export default {
         position: relative;
     }
 
+    .top-arrow {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        font-size: 20px;
+
+        position: fixed;
+        bottom: 0;
+        right: 20px;
+        background: var(--theme-color);
+        color: var(--theme-text-color);
+    }
+
+    // 底下播放组件
     .play-component {
         width: 100%;
         height: 50px;
@@ -339,7 +373,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-top: 1px solid #000;
+        border-top: 1px solid #ccc;
         .btn-ctrl {
             i {
                 font-size: 40px;
@@ -383,6 +417,14 @@ export default {
                 margin-left: 10px;
             }
         }
+    }
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: all 0.5s;
+    }
+    .fade-enter,
+    .fade-leave-to {
+        transform: translateY(100%);
     }
 }
 </style>

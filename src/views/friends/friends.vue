@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import dynamic from "../components/dynamic.vue";
-import request from "../request";
+import dynamic from "./dynamic.vue";
+import request from "../../request";
 export default {
     data() {
         return {

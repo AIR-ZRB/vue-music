@@ -4,7 +4,7 @@
         <!-- 标签区域, -->
         <div class="tag-group">
             <el-button @click="outerVisible = true">
-                {{ currentSelectText }}
+                选择标签：{{ currentSelectText }}
             </el-button>
 
             <!-- 下拉菜单 -->
@@ -47,7 +47,7 @@ export default {
             tagsList: [],
             videoList: [],
             currentSelect: [],
-            currentSelectText: "选择标签",
+            currentSelectText: "动漫",
             outerVisible: false,
             selectTagId: 4108  // 选择的ID，默认动漫Id
         };

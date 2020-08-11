@@ -72,6 +72,7 @@ module.exports = {
         this.$root.music.MusicLoading = true;
         let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
         this.$root.music.MusicUrl = "";
+
         console.log("音乐的播放地址" + musicUrl.data.body.data[0].url);
 
         if (musicUrl.data.body.data[0].url) {
@@ -89,5 +90,11 @@ module.exports = {
             return;
         }
         this.$root.music.MusicLoading = false;
+    },
+    async downloadMusic(musicMessage) {
+        let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
+        musicUrl = musicUrl.data.body;
+        if (musicUrl.data[0].url) return musicUrl.data[0].url;
+        if (!musicUrl.data[0].url) return false;
     },
 };
