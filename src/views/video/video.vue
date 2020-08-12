@@ -7,7 +7,7 @@
                 选择标签：{{ currentSelectText }}
             </el-button>
 
-            <!-- 下拉菜单 -->
+            <!-- 对话框 -->
 
             <el-dialog
                 width="80%"
@@ -25,6 +25,8 @@
         </div>
 
         <!-- 视频区域 -->
+        <notLogin v-if="videoList.length === 0" />
+        
         <div class="video-group">
             <el-row v-for="item in videoList" :key="item.data.coverUrl">
                 <el-col>
@@ -49,13 +51,13 @@ export default {
             currentSelect: [],
             currentSelectText: "动漫",
             outerVisible: false,
-            selectTagId: 4108  // 选择的ID，默认动漫Id
+            selectTagId: 4108, // 选择的ID，默认动漫Id
         };
     },
-    watch:{
-        selectTagId(){
+    watch: {
+        selectTagId() {
             this.getVideoList();
-        }
+        },
     },
     methods: {
         async getTags() {
@@ -63,16 +65,19 @@ export default {
             const getTags = await this.axios.get("/video/group/list", {
                 date: +new Date(),
                 cookie: window.sessionStorage.getItem("cookie"),
-                id: 1,  // 1代表PC版
+                id: 1, // 1代表PC版
             });
             this.tagsList = getTags.data.body.data;
         },
         async getVideoList() {
             // 获取一个标签下的视频
             // 能传入offset
-            const videoList = await this.axios.post(`/video/group?id=${this.selectTagId}`, {
-                cookie: window.sessionStorage.getItem("cookie"),
-            });
+            const videoList = await this.axios.post(
+                `/video/group?id=${this.selectTagId}`,
+                {
+                    cookie: window.sessionStorage.getItem("cookie"),
+                }
+            );
             this.videoList = videoList.data.body.datas;
         },
         // 获取点击之后的tag

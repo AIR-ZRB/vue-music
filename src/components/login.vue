@@ -1,5 +1,5 @@
 <template>
-    <div class="login" @click="loginClick" v-if="_props.loginIsShow">
+    <div class="login" @click="loginNotShow" v-if="_props.loginIsShow">
         <div class="login-box">
             <h2>手机登录</h2>
 
@@ -13,7 +13,9 @@
                 type="password"
             ></el-input>
 
-            <el-button type="success" class="login-submit">Login</el-button>
+            <el-button type="success" class="login-submit" @click="loginClick">
+                Login
+            </el-button>
         </div>
     </div>
 </template>
@@ -24,50 +26,47 @@ export default {
     props: ["loginIsShow"],
     data() {
         return {
-            username: "15889580759",
-            password: "zhu123",
+            username: "",
+            password: "",
         };
     },
     methods: {
-        // 如果账号密码错误，无法捕获--------------------------
-        loginClick(event) {
+        loginNotShow(event) {
             const targetClass = event.target.className;
             targetClass === "login" && this.$emit("update:loginIsShow", false);
+        },
+        // 如果账号密码错误，无法捕获--------------------------
+        loginClick() {
+            this.axios.post(`/login/cellphone`, {
+                    phone: this.username,
+                    password: this.password,
+                    url: +new Date(),
+                })
+                .then((data) => {
+                    let loginRes = data;
+                    let userId = loginRes.data.body.account.id;
+                    let cookie = "";
+                    for (let item of loginRes.data.cookie) {
+                        cookie += item.replace("Path=/", "");
+                    }
+                    // 登录完成把cookie保存来，如果遇到需要登录才能获取的数据，则url则携带cookie
+                    //  用户Id用来请求喜欢音乐的歌单使用
+                    window.sessionStorage.setItem("cookie", cookie);
+                    window.sessionStorage.setItem("userId", userId);
+                    this.$root.login = true;
 
-            if (targetClass.search("login-submit") > 0) {
-                this.axios
-                    .post(`/login/cellphone`, {
-                        phone: this.username,
-                        password: this.password,
-                        url: +new Date(),
-                    })
-                    .then((data) => {
-                        let loginRes = data;
-                        let userId = loginRes.data.body.account.id;
-                        let cookie = "";
-                        for (let item of loginRes.data.cookie) {
-                            cookie += item.replace("Path=/", "");
-                        }
-                        // 登录完成把cookie保存来，如果遇到需要登录才能获取的数据，则url则携带cookie
-                        //  用户Id用来请求喜欢音乐的歌单使用
-                        window.sessionStorage.setItem("cookie", cookie);
-                        window.sessionStorage.setItem("userId", userId);
-                        this.$root.login = true;
+                    const username = loginRes.data.body.profile.nickname;
+                    const avatarUrl = loginRes.data.body.profile.avatarUrl;
 
-                        const username = loginRes.data.body.profile.nickname;
-                        const avatarUrl = loginRes.data.body.profile.avatarUrl;
+                    this.$emit("update:username", username);
+                    this.$emit("update:avatarUrl", avatarUrl);
+                    this.$emit("update:loginIsShow", false);
 
-                        this.$emit("update:username", username);
-                        this.$emit("update:avatarUrl", avatarUrl);
-                        this.$emit("update:loginIsShow", false);
-
-                        Bus.$emit("isLogin",true);
-                    })
-                    .catch(() => {
-                        this.$message.error("账号/密码错误");
-                    });
-
-            }
+                    Bus.$emit("isLogin", true);
+                })
+                .catch(() => {
+                    this.$message.error("账号/密码错误");
+                });
         },
     },
 };

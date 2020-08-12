@@ -74,7 +74,7 @@ export default {
             );
 
             detailsSongList = detailsSongList.data.body;
-            console.log(detailsSongList);
+            // console.log(detailsSongList);
             this.songListAuthor = detailsSongList.playlist.creator.nickname;
             this.authorPicture = detailsSongList.playlist.creator.avatarUrl;
             this.createdTime = detailsSongList.playlist.creator.birthday;
@@ -173,12 +173,7 @@ export default {
             }
         }
 
-        .button-group {
-            button {
-                background: var(--theme-color);
-                color: var(--theme-text-color);
-            }
-        }
+
 
         .tags,
         .description {

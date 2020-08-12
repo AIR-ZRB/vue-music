@@ -20,11 +20,8 @@
         <!-- 歌单部分 -->
         <div class="recommend-playlist">
             <h3>推荐歌单</h3>
-
-            <div v-if="recommendPlaylist.length === 0 ? true : false">
-                你还未登录，此功能无法使用
-            </div>
-            <div class="recommend-playlist-box" v-else>
+            <notLogin v-if="recommendPlaylist.length === 0 ? true : false" />
+            <div class="recommend-playlist-box">
                 <el-row v-for="item in recommendPlaylist" :key="item.name">
                     <el-col>
                         <el-card :body-style="{ padding: '0px' }">

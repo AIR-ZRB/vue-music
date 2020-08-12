@@ -1,7 +1,6 @@
 <template>
     <div>
         <h2>音乐云盘</h2>
-        <!-- <el-table :data="cloudMusic" @row-dblclick="()=>request.getMusicUrl.call(this)"> -->
         <el-table :data="cloudMusic">
             <el-table-column
                 v-for="item in showList"

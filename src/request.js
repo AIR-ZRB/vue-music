@@ -20,6 +20,7 @@ module.exports = {
         });
         this.listMenu = this.listMenu.concat(pushSongList);
     },
+    
     // 获取云盘音乐里的数据
     async getCloudMusic() {
         const cloudMusic = await this.axios.post("/user/cloud", {
@@ -29,11 +30,13 @@ module.exports = {
         });
         this.cloudMusic = cloudMusic.data.body.data;
     },
+
     // 获取发现音乐页的banner
     async getBanner() {
         let banner = await this.axios.get("/banner?type=0");
         this.banner = banner.data.body.banners;
     },
+
     // 获取发现音乐页的推荐歌单
     async getRecommendPlaylist() {
         let getCookie = window.sessionStorage.getItem("cookie");
@@ -47,6 +50,7 @@ module.exports = {
             this.isLogin = true;
         }
     },
+
     // 获取朋友动态
     async getFriends() {
         const resData = await this.axios.post("/event", {
@@ -56,6 +60,7 @@ module.exports = {
         });
         this.getDynamic = resData.data.body.event;
     },
+
     // 获取私人FM数据
     async getFM() {
         const getFM = await this.axios.get("/personal_fm", {
@@ -64,7 +69,7 @@ module.exports = {
             cookie: window.sessionStorage.getItem("cookie"),
         });
         this.fm = getFM.data.body.data;
-        console.log(this.fm);
+        // console.log(this.fm);
     },
 
     // 获取音乐播放地址
@@ -91,6 +96,8 @@ module.exports = {
         }
         this.$root.music.MusicLoading = false;
     },
+
+    // 获取音乐播放地址（下载）
     async downloadMusic(musicMessage) {
         let musicUrl = await this.axios.post(`/song/url?id=${musicMessage.id}`);
         musicUrl = musicUrl.data.body;

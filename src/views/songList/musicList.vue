@@ -1,8 +1,9 @@
 <template>
     <div class="song">
+        <!--  -->
         <el-table
             :data="_props.musicMessage"
-            style="width: 100%"
+            style="width: 100%;overflow:auto"
             @row-dblclick="getMusicUrl"
         >
             <el-table-column
@@ -12,6 +13,7 @@
                 :label="item.cn"
             />
 
+            <!-- 下载列表单独拿出来 -->
             <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                     <i
@@ -49,7 +51,9 @@ export default {
             author: "",
             album: "",
             downloadUrl: "",
-            dialogVisible: false,
+            dialogVisible: false, // 下载提示对话框
+            count: 0, // 显示的数量
+            showData: [],
         };
     },
     methods: {
@@ -58,9 +62,8 @@ export default {
             return request.getMusicUrl.call(this, musicMessage);
         },
         async downloadMusic(index) {
-            this.dialogVisible = true;
-
             const currentMusic = this._props.musicMessage[index];
+            this.dialogVisible = true;
 
             this.name = currentMusic.name;
             this.author = currentMusic.author;
@@ -90,12 +93,6 @@ export default {
 .el-dialog {
     p {
         line-height: 26px;
-    }
-    .dialog-footer {
-        button {
-            background: var(--theme-color);
-            border-color: var(--theme-color);
-        }
     }
 }
 </style>

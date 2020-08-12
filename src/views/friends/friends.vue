@@ -1,6 +1,7 @@
 <template>
     <div>
         <h2>好友动态</h2>
+        <notLogin v-if="getDynamic.length === 0" />
         <dynamic v-for="item in getDynamic" :key="item.json" :dynamic="item" />
     </div>
 </template>
@@ -14,9 +15,7 @@ export default {
             getDynamic: [],
         };
     },
-    components: {
-        dynamic,
-    },
+    components: { dynamic },
     created() {
         request.getFriends.call(this);
     },

@@ -77,9 +77,6 @@
         />
 
         <!-- 底部音乐控件 -->
-        <span v-show="!playCtrlIsShow" class="top-arrow" @click='playCtrlShow'>
-            <i class="el-icon-arrow-up" />
-        </span>
         <transition name="fade">
             <div class="play-component" v-show="playCtrlIsShow">
                 <div class="btn-ctrl">
@@ -252,16 +249,15 @@ export default {
                     .musicPicture,
             });
         },
-        playCtrlShow(){
-              this.playCtrlIsShow = !this.playCtrlIsShow;
-        },
         // 切换主题色
         toggleTheme(theme) {
             this.currentTheme = theme.cn;
-
             // 主题色
             const LinkCss = document.getElementById("theme");
-            LinkCss.href = require(`../assets/css/${theme.en}.css`);
+
+            fetch(`/css/${theme.en}.css`)
+                .then((res) => res.text())
+                .then((data) => (LinkCss.innerHTML = data));
         },
     },
     updated() {
@@ -279,32 +275,35 @@ export default {
         this.$router.push("/DiscovrMusic");
 
         Bus.$on("nextMusic", () => this.switchoverMusic("next"));
+        Bus.$on("loginIsShow", () => (this.loginIsShow = true));
 
-        setTimeout(() => {
-            this.playCtrlIsShow = false;
-        }, 2000);
-
-        // 主题色
-        const LinkCss = document.getElementById("theme");
-        LinkCss.href = require("../assets/css/theme-green.css");
+        // setTimeout(() => {
+        //     this.playCtrlIsShow = false;
+        // }, 2000);
+        this.toggleTheme({ cn: "清新绿", en: "theme-green" });
     },
 };
 </script>
 
 <style lang="scss">
+@mixin flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .home {
     min-width: 1400px;
+    // 顶部区域
     .el-header {
         background: var(--theme-color);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        @include flex-between-center;
+
         h1 {
             color: var(--theme-text-color);
         }
         .user-message {
-            display: flex;
-            align-items: center;
+            @include flex-between-center;
             .avatar {
                 width: 50px;
                 height: 50px;
@@ -319,16 +318,13 @@ export default {
         }
     }
 
+    // 左侧菜单栏区域
     .el-aside {
         .el-menu {
             border: none;
             padding: 0 0 10px 0;
         }
 
-        a {
-            text-decoration: none;
-            color: #000;
-        }
         .el-menu-item {
             white-space: nowrap; //不换行
             overflow: hidden; //超出的部分隐藏
@@ -342,24 +338,6 @@ export default {
         }
     }
 
-    .el-main {
-        position: relative;
-    }
-
-    .top-arrow {
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        text-align: center;
-        font-size: 20px;
-
-        position: fixed;
-        bottom: 0;
-        right: 20px;
-        background: var(--theme-color);
-        color: var(--theme-text-color);
-    }
-
     // 底下播放组件
     .play-component {
         width: 100%;
@@ -370,9 +348,7 @@ export default {
         left: 0;
         background: #fff;
         padding: 0 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        @include flex-between-center;
         border-top: 1px solid #ccc;
         .btn-ctrl {
             i {
@@ -383,9 +359,7 @@ export default {
             }
         }
         .progress {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            @include flex-between-center;
             img {
                 width: 40px;
                 height: 40px;
@@ -406,9 +380,7 @@ export default {
         }
 
         .voice-ctrl {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            @include flex-between-center;
             i {
                 font-size: 16px;
             }

@@ -20,22 +20,24 @@ axios.defaults.baseURL = "http://localhost:4000/";
 // 路由模块
 import router from "./router/router.js";
 
-import "./assets/css/global.css";
-
+import "../public/css/global.css";
+import notLogin from "./components/notLogin";
+Vue.component("notLogin", notLogin);
 new Vue({
     data: {
         login: false,
         music: {
             MusicId: "",
             MusicName: "空",
-            MusicPicture: "http://p2.music.126.net/fxI_iAsaRU9M5ZGE-Pu7iw==/109951164479032071.jpg",
+            MusicPicture:
+                "http://p2.music.126.net/fxI_iAsaRU9M5ZGE-Pu7iw==/109951164479032071.jpg",
             MusicTime: "",
             MusicUrl: "",
             MusicAvatarPicture: "",
             MusicAvatar: "空",
             MusicVolume: 0.5,
             MusicLoading: false,
-            MusicList: []
+            MusicList: [],
         },
     },
     render: (h) => h(App),
