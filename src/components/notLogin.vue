@@ -18,8 +18,8 @@ export default {
 
 <style lang="scss">
 .not-login {
-    width: 500px;
-    margin: 20px auto;
+    width: 400px;
+    margin: 20px auto !important;
     text-align: center;
     p {
         font-size: 20px;

@@ -2,44 +2,52 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-import home from "../views/home.vue";
-import DiscovrMusic from "../views/DiscovrMusic.vue";
-import privateFM from "../views/privateFM.vue";
-
-import video from "../views/video/video.vue";
-import playVideo from "../views/video/playVideo.vue";
-
-import friends from "../views/friends/friends.vue";
-import cloud from "../views/cloud.vue";
-
-import songList from "../views/songList/songList.vue";
-
-
-
 export default new VueRouter({
     mode: "hash",
     routes: [
         {
             path: "/",
-            component: home,
+            component: () => import("../views/home.vue"),
             redirect: "/DiscovrMusic",
             children: [
-                { path: "/DiscovrMusic", component: DiscovrMusic },
-                { path: "/privateFM", component: privateFM },
-                { path: "/video", component: video },
-                { path: "/friends", component: friends },
-                { path: "/cloud", component: cloud },
-                { path: "/songList/*", component: songList },
-                { path: "/playVideo/*", component: playVideo },
+                {
+                    path: "/DiscovrMusic",
+                    component: () => import("../views/DiscovrMusic.vue"),
+                },
+                {
+                    path: "/privateFM",
+                    component: () => import("../views/privateFM.vue"),
+                },
+                {
+                    path: "/video",
+                    component: () => import("../views/video/video.vue"),
+                },
+                {
+                    path: "/playVideo/*",
+                    component: () => import("../views/video/playVideo.vue"),
+                },
+                {
+                    path: "/friends",
+                    component: () => import("../views/friends/friends.vue"),
+                },
+                {
+                    path: "/cloud",
+                    component: () => import("../views/cloud.vue"),
+                },
+                {
+                    path: "/songList/*",
+                    component: () => import("../views/songList/songList.vue"),
+                },
             ],
         },
-        {   
+        {
             path: "*",
             redirect: "/DiscovrMusic",
         },
     ],
 });
 
+// 解决Push Promise写法报错
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch((err) => err);

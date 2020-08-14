@@ -20,7 +20,6 @@ axios.defaults.baseURL = "http://localhost:4000/";
 // 路由模块
 import router from "./router/router.js";
 
-import "../public/css/global.css";
 import notLogin from "./components/notLogin";
 Vue.component("notLogin", notLogin);
 new Vue({

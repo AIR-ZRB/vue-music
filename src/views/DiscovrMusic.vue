@@ -105,11 +105,6 @@ export default {
                     border: none;
                     box-shadow: none;
                 }
-
-                a {
-                    text-decoration: none;
-                    color: #000;
-                }
                 img {
                     width: 200px;
                     height: 200px;

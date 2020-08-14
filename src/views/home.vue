@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <el-container>
+        <el-container class="home-container">
             <el-header>
                 <h1>青空云音乐</h1>
 
@@ -102,10 +102,9 @@
                 </div>
                 <div class="voice-ctrl">
                     <i class="el-icon-microphone"></i>
-                    <el-progress
-                        :show-text="false"
-                        :percentage="100"
-                    ></el-progress>
+                    <div class="block">
+                        <el-slider v-model="voice" @input="changeVoice" />
+                    </div>
                 </div>
             </div>
         </transition>
@@ -155,6 +154,7 @@ export default {
             currentProgress: 0, // 目前进度条的进度
             index: "", // 当前歌曲的索引
             playCtrlIsShow: true,
+            voice: 50,
         };
     },
 
@@ -249,6 +249,10 @@ export default {
                     .musicPicture,
             });
         },
+        // 音乐的声音切换
+        changeVoice(voice) {
+            this.$refs.audio.volume = voice / 100;
+        },
         // 切换主题色
         toggleTheme(theme) {
             this.currentTheme = theme.cn;
@@ -286,24 +290,31 @@ export default {
 </script>
 
 <style lang="scss">
-@mixin flex-between-center {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .home {
     min-width: 1400px;
+    @include w-h-hundred;
+    .home-container {
+        @include w-h-hundred;
+        overflow-y: scroll;
+        .el-container {
+            @include w-h-hundred;
+            padding: 60px 0 50px 0;
+        }
+    }
+
     // 顶部区域
     .el-header {
         background: var(--theme-color);
-        @include flex-between-center;
-
+        @include flex-layout(space-between);
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
         h1 {
             color: var(--theme-text-color);
         }
         .user-message {
-            @include flex-between-center;
+            @include flex-layout(space-between);
             .avatar {
                 width: 50px;
                 height: 50px;
@@ -320,6 +331,8 @@ export default {
 
     // 左侧菜单栏区域
     .el-aside {
+        height: 100%;
+        overflow-y: scroll;
         .el-menu {
             border: none;
             padding: 0 0 10px 0;
@@ -348,8 +361,9 @@ export default {
         left: 0;
         background: #fff;
         padding: 0 20px;
-        @include flex-between-center;
+        @include flex-layout(space-between);
         border-top: 1px solid #ccc;
+        z-index: 10;
         .btn-ctrl {
             i {
                 font-size: 40px;
@@ -359,7 +373,7 @@ export default {
             }
         }
         .progress {
-            @include flex-between-center;
+            @include flex-layout(space-between);
             img {
                 width: 40px;
                 height: 40px;
@@ -380,13 +394,19 @@ export default {
         }
 
         .voice-ctrl {
-            @include flex-between-center;
+            @include flex-layout(space-between);
             i {
                 font-size: 16px;
             }
-            .el-progress {
+            .block {
                 width: 100px;
                 margin-left: 10px;
+                .el-slider__bar {
+                    background: var(--theme-color);
+                }
+                .el-slider__button {
+                    border-color: var(--theme-color);
+                }
             }
         }
     }

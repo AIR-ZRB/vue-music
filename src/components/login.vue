@@ -37,7 +37,8 @@ export default {
         },
         // 如果账号密码错误，无法捕获--------------------------
         loginClick() {
-            this.axios.post(`/login/cellphone`, {
+            this.axios
+                .post(`/login/cellphone`, {
                     phone: this.username,
                     password: this.password,
                     url: +new Date(),
@@ -74,8 +75,7 @@ export default {
 
 <style lang="scss">
 .login {
-    width: 100%;
-    height: 100%;
+    @include w-h-hundred;
     background: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
@@ -94,11 +94,7 @@ export default {
         justify-content: left;
         flex-wrap: wrap;
 
-        // .el-input {
-        //     margin-bottom: 30px;
-        // }
         button {
-            // padding: 0;
             height: 40px;
         }
     }
