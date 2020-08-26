@@ -14,8 +14,8 @@ import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
 
 // 网易于端口默认挂载在4000
-axios.defaults.baseURL = "http://localhost:4000/";
-// axios.defaults.baseURL = "http://49.232.192.13:4000";
+// axios.defaults.baseURL = "http://localhost:4000/";
+axios.defaults.baseURL = "http://49.232.192.13:4000";
 
 // 路由模块
 import router from "./router/router.js";
